@@ -1,0 +1,47 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30711.63
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TerraformPluginDotNet", "TerraformPluginDotNet\TerraformPluginDotNet.csproj", "{970720D7-EB60-4FED-B018-1FB4D3BE6476}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6C058BAB-F093-4BC1-A3B5-64E3CD34080E}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{50C52917-AE5D-4F53-BA93-092CB6D76025}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleProvider", "samples\SampleProvider\SampleProvider.csproj", "{A945F95E-E4BC-4BD3-B16A-8000615A50DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerraformPluginDotNet.Test", "TerraformPluginDotNet.Test\TerraformPluginDotNet.Test.csproj", "{EE43AB61-09E2-4464-835E-C52D35AC4CB3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{970720D7-EB60-4FED-B018-1FB4D3BE6476}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{970720D7-EB60-4FED-B018-1FB4D3BE6476}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{970720D7-EB60-4FED-B018-1FB4D3BE6476}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{970720D7-EB60-4FED-B018-1FB4D3BE6476}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A945F95E-E4BC-4BD3-B16A-8000615A50DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A945F95E-E4BC-4BD3-B16A-8000615A50DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A945F95E-E4BC-4BD3-B16A-8000615A50DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A945F95E-E4BC-4BD3-B16A-8000615A50DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE43AB61-09E2-4464-835E-C52D35AC4CB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE43AB61-09E2-4464-835E-C52D35AC4CB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE43AB61-09E2-4464-835E-C52D35AC4CB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE43AB61-09E2-4464-835E-C52D35AC4CB3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A945F95E-E4BC-4BD3-B16A-8000615A50DA} = {50C52917-AE5D-4F53-BA93-092CB6D76025}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6F7700C3-5F6B-4D22-A507-A2EA099D993D}
+	EndGlobalSection
+EndGlobal

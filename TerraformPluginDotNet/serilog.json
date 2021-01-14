@@ -1,0 +1,53 @@
+{
+  "Serilog": {
+    "Using": [ "Serilog.Expressions", "Serilog.Sinks.File" ],
+    "Enrich": [ "FromLogContext" ],
+    "WriteTo": [
+      {
+        "Name": "File",
+        "Args": { "path": "log.txt" }
+      }
+    ],
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "Grpc": "Warning",
+        "Microsoft": "Information",
+        "Microsoft.AspNetCore.Routing.EndpointMiddleware": "Error",
+        "Microsoft.AspNetCore.Server.Kestrel": "Error"
+      }
+    },
+    "Filter": [
+      {
+        "Name": "ByExcluding",
+        "Args": {
+          "expression": "RequestPath like '%plugin.%'"
+        }
+      },
+      {
+        "Name": "ByExcluding",
+        "Args": {
+          "expression": "RequestPath like '%tfplugin5.Provider/GetSchema'"
+        }
+      },
+      {
+        "Name": "ByExcluding",
+        "Args": {
+          "expression": "RequestPath like '%tfplugin5.Provider/ValidateResourceTypeConfig'"
+        }
+      },
+      {
+        "Name": "ByExcluding",
+        "Args": {
+          "expression": "RequestPath like '%tfplugin5.Provider/Configure'"
+        }
+      },
+      {
+        "Name": "ByExcluding",
+        "Args": {
+          "expression": "RequestPath like '%tfplugin5.Provider/PrepareProviderConfig'"
+        }
+      }
+    ]
+  }
+}
