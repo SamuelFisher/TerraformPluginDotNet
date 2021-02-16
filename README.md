@@ -1,6 +1,9 @@
 TerraformPluginDotNet
 =====================
 
+[![Build status](https://ci.appveyor.com/api/projects/status/hdc6nypp3s5hmcn6/branch/master?svg=true)](https://ci.appveyor.com/project/SamuelFisher/terraformplugindotnet/branch/master)
+[![NuGet](https://img.shields.io/nuget/vpre/TerraformPluginDotNet.svg)](https://www.nuget.org/packages/TerraformPluginDotNet)
+
 Write custom Terraform providers in C#. See samples directory for an example provider.
 
 For more information on this project, see
