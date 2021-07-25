@@ -1,7 +1,7 @@
 TerraformPluginDotNet
 =====================
 
-![Build status](https://github.com/SamuelFisher/TerraformPluginDotNet/actions/workflows/ci.yml/badge.svg?branch=master)
+[![Build status](https://github.com/SamuelFisher/TerraformPluginDotNet/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/SamuelFisher/TerraformPluginDotNet/actions)
 [![NuGet](https://img.shields.io/nuget/vpre/TerraformPluginDotNet.svg)](https://www.nuget.org/packages/TerraformPluginDotNet)
 
 Write custom Terraform providers in C#. See samples directory for an example provider.
