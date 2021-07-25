@@ -1,0 +1,43 @@
+name: CI
+on: [push]
+
+jobs:
+  ci:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, windows-2019]
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0 # Required for nbgv
+    - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '5.0.x'
+    - name: Restore
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    - name: Test
+      run: dotnet test --no-restore
+    - uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.0.3
+        terraform_wrapper: false
+    - name: Set TF_PLUGIN_DOTNET_TEST_TF_BIN (Ubuntu)
+      if: startsWith(matrix.os, 'ubuntu')
+      run: echo "TF_PLUGIN_DOTNET_TEST_TF_BIN=$(which terraform)" >> $GITHUB_ENV
+    - name: Set TF_PLUGIN_DOTNET_TEST_TF_BIN (Windows)
+      if: startsWith(matrix.os, 'windows')
+      run: echo "TF_PLUGIN_DOTNET_TEST_TF_BIN=$(get-command terraform | select-object -ExpandProperty source)" >> $env:GITHUB_ENV
+    - name: Functional tests
+      run: dotnet test --no-restore --filter Category=Functional
+    - name: Pack
+      run: dotnet pack --no-restore --configuration Release -o packages
+    - name: Upload packages as artefacts
+      if: startsWith(matrix.os, 'windows')
+      uses: actions/upload-artifact@v2
+      with:
+        name: packages
+        path: packages/*.nupkg
+        retention-days: 5
