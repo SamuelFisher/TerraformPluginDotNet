@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <PackageId>TerraformPluginDotNet</PackageId>
@@ -9,27 +8,23 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Authors>SamuelFisher</Authors>
   </PropertyGroup>
-
-<ItemGroup>
-  <Protobuf Include="Protos\tfplugin5.2.proto" GrpcServices="Server" />
-</ItemGroup>
-
+  <ItemGroup>
+    <Protobuf Include="Protos\tfplugin5.2.proto" GrpcServices="Server" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Grpc.AspNetCore" Version="2.32.0" />
     <PackageReference Include="MessagePack" Version="2.2.60" />
     <PackageReference Include="Portable.BouncyCastle" Version="1.8.8" />
-    <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
     <PackageReference Include="Serilog.Expressions" Version="1.0.0" />
     <PackageReference Include="Nerdbank.GitVersioning">
       <Version>3.3.37</Version>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
-
   <ItemGroup>
     <None Update="serilog.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
 </Project>

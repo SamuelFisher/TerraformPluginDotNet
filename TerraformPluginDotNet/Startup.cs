@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using TerraformPluginDotNet.ResourceProvider;
 using TerraformPluginDotNet.Serialization;
 using TerraformPluginDotNet.Services;
@@ -25,12 +27,31 @@ namespace TerraformPluginDotNet
             services.AddTransient<IDynamicValueSerializer, DefaultDynamicValueSerializer>();
         }
 
-        public void Configure(IApplicationBuilder app, IHostApplicationLifetime lifetime, IWebHostEnvironment env, ILogger<Startup> logger)
+        public void Configure(
+            IApplicationBuilder app,
+            IHostApplicationLifetime lifetime,
+            IWebHostEnvironment env,
+            ILogger<Startup> logger,
+            IOptions<TerraformPluginHostOptions> pluginHostOptions)
         {
             lifetime.ApplicationStarted.Register(() =>
             {
                 logger.LogInformation("Application started.");
-                Console.WriteLine($"1|5|tcp|127.0.0.1:5344|grpc|{Convert.ToBase64String(Program.Cert.RawData)}");
+
+                var serverAddress = app.ServerFeatures.Get<IServerAddressesFeature>().Addresses.First();
+                var serverUri = new Uri(serverAddress);
+                var host = serverUri.Host == "localhost" ? "127.0.0.1" : serverUri.Host;
+
+                if (pluginHostOptions.Value.DebugMode)
+                {
+                    Console.WriteLine("Debug mode enabled (no certificate). Run Terraform with the following environment variable set:");
+                    Console.WriteLine($@"TF_REATTACH_PROVIDERS={{""{pluginHostOptions.Value.FullProviderName}"":{{""Protocol"":""grpc"",""Pid"":{Environment.ProcessId},""Test"":true,""Addr"":{{""Network"":""tcp"",""String"":""{host}:{serverUri.Port}""}}}}}}");
+                }
+                else
+                {
+                    var pluginHostCertificate = app.ApplicationServices.GetRequiredService<PluginHostCertificate>();
+                    Console.WriteLine($"1|5|tcp|{host}:{serverUri.Port}|grpc|{Convert.ToBase64String(pluginHostCertificate.Certificate.RawData)}");
+                }
             });
 
             if (env.IsDevelopment())

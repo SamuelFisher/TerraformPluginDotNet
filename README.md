@@ -23,7 +23,7 @@ project following the same structure as SampleProvider.
 Instructions are for Linux x64 with Terraform v0.13.3. May work on other platforms
 and Terraform versions.
 
-1. In the `samples/SampleProvider` directory, publish a self-contained single-file binary:
+1. In the `samples/SampleProvider/SampleProvider` directory, publish a self-contained single-file binary:
 
 ```
 dotnet publish -r linux-x64 -c release -p:PublishSingleFile=true
@@ -78,3 +78,44 @@ resource "dotnetsample_file" "demo_file" {
 7. File at `/tmp/file.txt` should contain the contents `this is a test`
 
 See `log.txt` in your working directory for troubleshooting.
+
+## Debugging
+
+Terraform can attach to an already started provider by making use of debug mode,
+which allows debugging in Visual Studio. To do this, start the SampleProvider
+project with the `--DebugMode=true` argument. By default, this will also cause
+log messages to be written to the console in addition to a file.
+
+Once started, it will output an environment variable that can be used to
+instruct Terraform to connect to this already running provider.
+
+For more information, see
+[Running Terraform With A Provider in Debug Mode](https://www.terraform.io/docs/extend/debugging.html#running-terraform-with-a-provider-in-debug-mode).
+
+## Testing
+
+Tests that involve running Terraform are marked with `Category=Functional`. To run
+these tests, you will need to have Terraform installed and set the environment
+variable `TF_PLUGIN_DOTNET_TEST_TF_BIN`.
+
+For example:
+
+```bash
+$ TF_PLUGIN_DOTNET_TEST_TF_BIN=/usr/bin/terraform dotnet test --filter Category=Functional
+```
+
+In Visual Studio, you can create a `test.runsettings` file to do this:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <RunConfiguration>
+    <EnvironmentVariables>
+      <TF_PLUGIN_DOTNET_TEST_TF_BIN>C:\Path\To\terraform.exe</TF_PLUGIN_DOTNET_TEST_TF_BIN>
+    </EnvironmentVariables>
+  </RunConfiguration>
+</RunSettings>
+```
+
+The `TerraformPluginDotNet.Testing` package can be used to help with writing
+tests for custom providers. See `samples/SampleProvider/SampleProvider.Test`.

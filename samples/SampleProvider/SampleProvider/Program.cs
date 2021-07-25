@@ -1,14 +1,16 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using TerraformPluginDotNet;
 using TerraformPluginDotNet.ResourceProvider;
 
 namespace SampleProvider
 {
     class Program
     {
-        static void Main(string[] args)
+        static Task Main(string[] args)
         {
-            TerraformPluginDotNet.Program.Run(args, (services, registry) =>
+            return TerraformPluginDotNet.Program.RunAsync(args, "example.com/example/dotnetsample", (services, registry) =>
             {
                 services.AddSingleton<IResourceProvider<SampleFileResource>, SampleFileResourceProvider>();
                 registry.RegisterResource<SampleFileResource>("dotnetsample_file");

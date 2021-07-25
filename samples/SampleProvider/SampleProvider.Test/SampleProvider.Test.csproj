@@ -1,18 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="NUnit" Version="3.13.2" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0" />
   </ItemGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\TerraformPluginDotNet\TerraformPluginDotNet.csproj" />
+    <ProjectReference Include="..\..\..\TerraformPluginDotNet.Testing\TerraformPluginDotNet.Testing.csproj" />
+    <ProjectReference Include="..\SampleProvider\SampleProvider.csproj" />
   </ItemGroup>
-
 </Project>

@@ -8,7 +8,7 @@ using TerraformPluginDotNet.ResourceProvider;
 
 namespace SampleProvider
 {
-    class SampleFileResourceProvider : IResourceProvider<SampleFileResource>
+    public class SampleFileResourceProvider : IResourceProvider<SampleFileResource>
     {
         public Task<SampleFileResource> PlanAsync(SampleFileResource prior, SampleFileResource proposed)
         {
