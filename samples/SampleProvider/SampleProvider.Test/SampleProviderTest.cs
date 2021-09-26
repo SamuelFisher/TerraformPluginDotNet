@@ -110,7 +110,7 @@ content = ""Content""
 
             await terraform.ApplyAsync();
 
-            await File.WriteAllTextAsync(resourcePath, "");
+            await File.WriteAllTextAsync(resourcePath, string.Empty);
             await terraform.PlanAsync();
             await terraform.ApplyAsync();
 

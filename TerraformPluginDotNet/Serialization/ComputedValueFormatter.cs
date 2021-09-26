@@ -1,10 +1,10 @@
-﻿using MessagePack;
-using MessagePack.Formatters;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MessagePack;
+using MessagePack.Formatters;
 
 namespace TerraformPluginDotNet.Serialization
 {

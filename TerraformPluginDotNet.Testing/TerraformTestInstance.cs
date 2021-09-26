@@ -13,8 +13,6 @@ namespace TerraformPluginDotNet.Testing
         private readonly string _providerName;
         private readonly int _port;
 
-        public string WorkDir { get; private set; }
-
         public TerraformTestInstance(string terraformBin, string providerName, int port, string workDir)
         {
             _terraformBin = terraformBin;
@@ -23,16 +21,21 @@ namespace TerraformPluginDotNet.Testing
             WorkDir = workDir;
         }
 
+        public string WorkDir { get; private set; }
+
         public TimeSpan DefaultCommandTimeout { get; set; } = TimeSpan.FromMinutes(1);
 
         public async Task RunCommandAsync(string command, TimeSpan? timeout = null)
         {
             timeout ??= DefaultCommandTimeout;
 
-            var startInfo = new ProcessStartInfo(_terraformBin, command);
-            startInfo.WorkingDirectory = WorkDir;
-            startInfo.RedirectStandardOutput = true;
-            startInfo.RedirectStandardError = true;
+            var startInfo = new ProcessStartInfo(_terraformBin, command)
+            {
+                WorkingDirectory = WorkDir,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+            };
+
             startInfo.EnvironmentVariables.Add("TF_REATTACH_PROVIDERS", $@"{{""example.com/example/{_providerName}"":{{""Protocol"":""grpc"",""Pid"":{Environment.ProcessId},""Test"":true,""Addr"":{{""Network"":""tcp"",""String"":""127.0.0.1:{_port}""}}}}}}");
             var p = Process.Start(startInfo);
 

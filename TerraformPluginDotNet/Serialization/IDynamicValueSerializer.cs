@@ -1,9 +1,7 @@
-﻿using Google.Protobuf;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Tfplugin5;
 
 namespace TerraformPluginDotNet.Serialization
 {

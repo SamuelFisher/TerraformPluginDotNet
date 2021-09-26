@@ -2,9 +2,9 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using TerraformPluginDotNet.ResourceProvider;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using TerraformPluginDotNet.ResourceProvider;
 
 namespace TerraformPluginDotNet.Testing
 {
@@ -13,7 +13,7 @@ namespace TerraformPluginDotNet.Testing
         private readonly string _terraformBin;
         private readonly int _port;
 
-        private CancellationTokenSource _cancelHost;
+        private readonly CancellationTokenSource _cancelHost;
         private Task _host;
 
         public TerraformTestHost(string terraformBin, int port = WebHostBuilderExtensions.DefaultPort)
@@ -48,7 +48,7 @@ namespace TerraformPluginDotNet.Testing
 
         public async Task<ITerraformTestInstance> CreateTerraformTestInstanceAsync(string providerName, bool configure = true)
         {
-            var workDir = Path.Combine(Path.GetTempPath(), $"TerraformPluginDotNet_{Guid.NewGuid()}"); ;
+            var workDir = Path.Combine(Path.GetTempPath(), $"TerraformPluginDotNet_{Guid.NewGuid()}");
             Directory.CreateDirectory(workDir);
 
             var terraform = new TerraformTestInstance(_terraformBin, providerName, _port, workDir);

@@ -1,12 +1,11 @@
-﻿using Google.Protobuf;
-using Grpc.Core;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Grpc.Core;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using TerraformPluginDotNet.ProviderConfig;
 using TerraformPluginDotNet.ResourceProvider;
 using Tfplugin5;
@@ -53,7 +52,7 @@ namespace TerraformPluginDotNet.Services
         {
             var res = new GetProviderSchema.Types.Response();
             res.Provider = _providerConfiguration?.ConfigurationSchema ?? new Schema { Block = new Schema.Types.Block { } };
-                        
+
             foreach (var schema in _resourceRegistry.Schemas)
             {
                 res.ResourceSchemas.Add(schema.Key, schema.Value);

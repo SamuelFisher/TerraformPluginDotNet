@@ -12,7 +12,7 @@
     <Protobuf Include="Protos\tfplugin5.2.proto" GrpcServices="Server" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Grpc.AspNetCore" Version="2.32.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.39.0" />
     <PackageReference Include="MessagePack" Version="2.2.60" />
     <PackageReference Include="Portable.BouncyCastle" Version="1.8.8" />
     <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />

@@ -1,13 +1,9 @@
-﻿using Google.Protobuf;
-using MessagePack;
-using MessagePack.Formatters;
-using MessagePack.Resolvers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Tfplugin5;
+using MessagePack;
 
 namespace TerraformPluginDotNet.Serialization
 {

@@ -51,7 +51,7 @@ namespace TerraformPluginDotNet
                     services.Configure<TerraformPluginHostOptions>(x => x.FullProviderName = fullProviderName);
                     services.AddSingleton(new PluginHostCertificate
                     {
-                        Certificate = CertificateGenerator.GenerateSelfSignedCertificate("CN=127.0.0.1", "CN=root ca", CertificateGenerator.GeneratePrivateKey())
+                        Certificate = CertificateGenerator.GenerateSelfSignedCertificate("CN=127.0.0.1", "CN=root ca", CertificateGenerator.GeneratePrivateKey()),
                     });
                 })
                 .ConfigureWebHostDefaults(webBuilder =>

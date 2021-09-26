@@ -87,6 +87,7 @@ namespace TerraformPluginDotNet
             var parms = DotNetUtilities.ToRSAParameters(rsaparams);
             var rsa1 = RSA.Create();
             rsa1.ImportParameters(parms);
+
             // https://github.com/dotnet/runtime/issues/23749
             var cert = x509.CopyWithPrivateKey(rsa1);
 

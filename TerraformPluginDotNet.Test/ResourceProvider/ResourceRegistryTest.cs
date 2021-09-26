@@ -9,8 +9,8 @@ using MessagePack;
 using NUnit.Framework;
 using TerraformPluginDotNet.ResourceProvider;
 using TerraformPluginDotNet.Resources;
-using Key = MessagePack.KeyAttribute;
 using Description = System.ComponentModel.DescriptionAttribute;
+using Key = MessagePack.KeyAttribute;
 
 namespace TerraformPluginDotNet.Test.ResourceProvider
 {

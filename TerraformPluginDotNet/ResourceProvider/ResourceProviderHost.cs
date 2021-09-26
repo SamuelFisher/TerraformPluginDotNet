@@ -79,7 +79,7 @@ namespace TerraformPluginDotNet.ResourceProvider
                 var createdSerialized = SerializeDynamicValue(created);
                 return new ApplyResourceChange.Types.Response
                 {
-                    NewState = createdSerialized
+                    NewState = createdSerialized,
                 };
             }
             else
