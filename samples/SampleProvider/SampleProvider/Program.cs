@@ -12,6 +12,8 @@ namespace SampleProvider
         {
             return TerraformPluginDotNet.Program.RunAsync(args, "example.com/example/dotnetsample", (services, registry) =>
             {
+                services.AddSingleton<SampleConfigurator>();
+                services.AddTerraformProviderConfigurator<Configuration, SampleConfigurator>();
                 services.AddSingleton<IResourceProvider<SampleFileResource>, SampleFileResourceProvider>();
                 registry.RegisterResource<SampleFileResource>("dotnetsample_file");
             });

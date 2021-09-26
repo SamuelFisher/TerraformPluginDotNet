@@ -10,6 +10,13 @@ namespace SampleProvider
 {
     public class SampleFileResourceProvider : IResourceProvider<SampleFileResource>
     {
+        private readonly SampleConfigurator _configurator;
+
+        public SampleFileResourceProvider(SampleConfigurator configurator)
+        {
+            _configurator = configurator;
+        }
+
         public Task<SampleFileResource> PlanAsync(SampleFileResource prior, SampleFileResource proposed)
         {
             return Task.FromResult(proposed);
@@ -18,7 +25,7 @@ namespace SampleProvider
         public async Task<SampleFileResource> CreateAsync(SampleFileResource planned)
         {
             planned.Id = Guid.NewGuid().ToString();
-            await File.WriteAllTextAsync(planned.Path, planned.Content);
+            await File.WriteAllTextAsync(planned.Path, BuildContent(planned.Content));
             return planned;
         }
 
@@ -37,8 +44,21 @@ namespace SampleProvider
 
         public async Task<SampleFileResource> UpdateAsync(SampleFileResource prior, SampleFileResource planned)
         {
-            await File.WriteAllTextAsync(planned.Path, planned.Content);
+            await File.WriteAllTextAsync(planned.Path, BuildContent(planned.Content));
             return planned;
+        }
+
+        private string BuildContent(string content)
+        {
+            if (_configurator.Config?.FileHeader is not string header)
+            {
+                return content;
+            }
+
+            var sb = new StringBuilder();
+            sb.AppendLine(header);
+            sb.Append(content);
+            return sb.ToString();
         }
     }
 }

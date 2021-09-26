@@ -1,4 +1,5 @@
-﻿using Grpc.Core;
+﻿using Google.Protobuf;
+using Grpc.Core;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -6,44 +7,52 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using TerraformPluginDotNet.ProviderConfig;
 using TerraformPluginDotNet.ResourceProvider;
 using Tfplugin5;
 
 namespace TerraformPluginDotNet.Services
 {
-    public class Terraform5ProviderService : Provider.ProviderBase
+    class Terraform5ProviderService : Provider.ProviderBase
     {
         private readonly ILogger<Terraform5ProviderService> _logger;
         private readonly IHostApplicationLifetime _lifetime;
         private readonly ResourceRegistry _resourceRegistry;
         private readonly IServiceProvider _serviceProvider;
+        private readonly ProviderConfigurationRegistry _providerConfiguration;
 
         public Terraform5ProviderService(
             ILogger<Terraform5ProviderService> logger,
             IHostApplicationLifetime lifetime,
             ResourceRegistry resourceRegistry,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            ProviderConfigurationRegistry providerConfiguration = null)
         {
             _logger = logger;
             _lifetime = lifetime;
             _resourceRegistry = resourceRegistry;
             _serviceProvider = serviceProvider;
+            _providerConfiguration = providerConfiguration;
         }
 
-        public override Task<Configure.Types.Response> Configure(Configure.Types.Request request, ServerCallContext context)
+        public override async Task<Configure.Types.Response> Configure(Configure.Types.Request request, ServerCallContext context)
         {
-            return Task.FromResult(new Configure.Types.Response {});
+            if (_providerConfiguration == null)
+            {
+                return new Configure.Types.Response { };
+            }
+
+            var configurationHostType = typeof(ProviderConfigurationHost<>).MakeGenericType(_providerConfiguration.ConfigurationType);
+            var configurationHost = _serviceProvider.GetService(configurationHostType);
+            await (Task)configurationHostType.GetMethod(nameof(ProviderConfigurationHost<object>.ConfigureAsync))
+                .Invoke(configurationHost, new[] { request });
+            return new Configure.Types.Response { };
         }
 
         public override Task<GetProviderSchema.Types.Response> GetSchema(GetProviderSchema.Types.Request request, ServerCallContext context)
         {
-            var res = new GetProviderSchema.Types.Response
-            {
-                Provider = new Schema
-                {
-                    Block = new Schema.Types.Block { },
-                },
-            };
+            var res = new GetProviderSchema.Types.Response();
+            res.Provider = _providerConfiguration?.ConfigurationSchema ?? new Schema { Block = new Schema.Types.Block { } };
                         
             foreach (var schema in _resourceRegistry.Schemas)
             {

@@ -42,7 +42,6 @@ namespace TerraformPluginDotNet
         public static IHostBuilder CreateHostBuilder(
             string[] args,
             string fullProviderName,
-
             Action<IServiceCollection, ResourceRegistry> configure) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration(configuration => configuration.AddJsonFile("serilog.json", optional: true))

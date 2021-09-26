@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using TerraformPluginDotNet.ProviderConfig;
 using TerraformPluginDotNet.ResourceProvider;
 using TerraformPluginDotNet.Serialization;
 using TerraformPluginDotNet.Services;
@@ -22,6 +23,7 @@ namespace TerraformPluginDotNet
         {
             services.AddGrpc();
 
+            services.AddTransient(typeof(ProviderConfigurationHost<>));
             services.AddTransient(typeof(ResourceProviderHost<>));
             services.AddTransient(typeof(IResourceUpgrader<>), typeof(DefaultResourceUpgrader<>));
             services.AddTransient<IDynamicValueSerializer, DefaultDynamicValueSerializer>();

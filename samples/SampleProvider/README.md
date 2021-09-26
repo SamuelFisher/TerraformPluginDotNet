@@ -12,3 +12,12 @@ resource "dotnetsample_file" "demo_file" {
   content = "this is a test"
 }
 ```
+
+The provider can optionally be configured to prepend a fixed header to every
+file.
+
+```hcl
+provider "dotnetsample" {
+  file_header = "# File Header"
+}
+```
