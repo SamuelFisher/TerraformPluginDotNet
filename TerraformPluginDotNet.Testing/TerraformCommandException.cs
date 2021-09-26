@@ -10,6 +10,7 @@ namespace TerraformPluginDotNet.Testing
             Command = command;
             ExitCode = exitCode;
             Output = output;
+            Message = $"Terraform exited with code {ExitCode}.";
         }
 
         internal TerraformCommandException(string command, TimeSpan? timedOutAfter, string output)
@@ -17,33 +18,26 @@ namespace TerraformPluginDotNet.Testing
             Command = command;
             TimedOutAfter = timedOutAfter;
             Output = output;
+            Message = $"Terraform timed out after {TimedOutAfter.Value.TotalSeconds:N2}s.";
         }
 
-        public string Command { get; private set; }
+        public override string Message { get; }
 
-        public int ExitCode { get; private set; }
+        public string Command { get; }
 
-        public TimeSpan? TimedOutAfter { get; private set; }
+        public int ExitCode { get; }
 
-        public string Output { get; private set; }
+        public TimeSpan? TimedOutAfter { get; }
+
+        public string Output { get; }
 
         public override string ToString()
         {
             var sb = new StringBuilder();
-
-            if (TimedOutAfter.HasValue)
-            {
-                sb.AppendLine($"Terraform timed out after {TimedOutAfter.Value.TotalSeconds:N2}s.");
-            }
-            else
-            {
-                sb.AppendLine($"Terraform exited with code {ExitCode}.");
-            }
-
+            sb.AppendLine(Message);
             sb.AppendLine();
             sb.AppendLine($"$ terraform {Command}");
             sb.Append(Output);
-
             return sb.ToString();
         }
     }
