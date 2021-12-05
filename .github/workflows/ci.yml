@@ -22,7 +22,7 @@ jobs:
       run: dotnet test --no-restore
     - uses: hashicorp/setup-terraform@v1
       with:
-        terraform_version: 1.0.3
+        terraform_version: 1.0.11
         terraform_wrapper: false
     - name: Set TF_PLUGIN_DOTNET_TEST_TF_BIN (Ubuntu)
       if: startsWith(matrix.os, 'ubuntu')
