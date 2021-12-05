@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <PackageId>TerraformPluginDotNet.Testing</PackageId>
     <PackageProjectUrl>https://github.com/SamuelFisher/TerraformPluginDotNet</PackageProjectUrl>
     <RepositoryUrl>https://github.com/SamuelFisher/TerraformPluginDotNet</RepositoryUrl>
@@ -11,7 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TerraformPluginDotNet\TerraformPluginDotNet.csproj" />
     <PackageReference Include="Nerdbank.GitVersioning">
-      <Version>3.3.37</Version>
+      <Version>3.4.244</Version>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
