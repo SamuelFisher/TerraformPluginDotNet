@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using TerraformPluginDotNet.Serialization;
+﻿using TerraformPluginDotNet.Serialization;
 using Tfplugin5;
 
 namespace TerraformPluginDotNet.ProviderConfig;

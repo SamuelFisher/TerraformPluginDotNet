@@ -1,7 +1,4 @@
-﻿using System.Text;
-using System.Threading.Tasks;
-
-namespace TerraformPluginDotNet.ProviderConfig;
+﻿namespace TerraformPluginDotNet.ProviderConfig;
 
 public interface IProviderConfigurator<T>
 {

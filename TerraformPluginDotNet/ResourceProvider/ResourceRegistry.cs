@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Tfplugin5;
+﻿using Tfplugin5;
 
 namespace TerraformPluginDotNet.ResourceProvider;
 

@@ -1,5 +1,4 @@
-﻿using System;
-using Tfplugin5;
+﻿using Tfplugin5;
 
 namespace TerraformPluginDotNet.ProviderConfig;
 

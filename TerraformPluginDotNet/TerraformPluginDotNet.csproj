@@ -8,6 +8,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Authors>SamuelFisher</Authors>
     <WarningsAsErrors>true</WarningsAsErrors>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
     <Protobuf Include="Protos\tfplugin5.2.proto" GrpcServices="Server" />
