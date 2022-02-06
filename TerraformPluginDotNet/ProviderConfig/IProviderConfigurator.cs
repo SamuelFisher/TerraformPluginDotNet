@@ -1,10 +1,9 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
 
-namespace TerraformPluginDotNet.ProviderConfig
+namespace TerraformPluginDotNet.ProviderConfig;
+
+public interface IProviderConfigurator<T>
 {
-    public interface IProviderConfigurator<T>
-    {
-        Task ConfigureAsync(T config);
-    }
+    Task ConfigureAsync(T config);
 }

@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TerraformPluginDotNet.ResourceProvider
+namespace TerraformPluginDotNet.ResourceProvider;
+
+public interface IResourceUpgrader<T>
 {
-    public interface IResourceUpgrader<T>
-    {
-        Task<T> UpgradeResourceStateAsync(long schemaVersion, ReadOnlyMemory<byte> json);
-    }
+    Task<T> UpgradeResourceStateAsync(long schemaVersion, ReadOnlyMemory<byte> json);
 }

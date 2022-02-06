@@ -5,10 +5,9 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TerraformPluginDotNet
+namespace TerraformPluginDotNet;
+
+public record PluginHostCertificate
 {
-    public record PluginHostCertificate
-    {
-        public X509Certificate2 Certificate { get; init; }
-    }
+    public X509Certificate2 Certificate { get; init; }
 }

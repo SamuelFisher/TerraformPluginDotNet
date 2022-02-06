@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TerraformPluginDotNet.ResourceProvider
+namespace TerraformPluginDotNet.ResourceProvider;
+
+public interface IResourceProvider<T>
 {
-    public interface IResourceProvider<T>
-    {
-        Task<T> PlanAsync(T prior, T proposed);
+    Task<T> PlanAsync(T prior, T proposed);
 
-        Task<T> CreateAsync(T planned);
+    Task<T> CreateAsync(T planned);
 
-        Task<T> ReadAsync(T resource);
+    Task<T> ReadAsync(T resource);
 
-        Task<T> UpdateAsync(T prior, T planned);
+    Task<T> UpdateAsync(T prior, T planned);
 
-        Task DeleteAsync(T resource);
-    }
+    Task DeleteAsync(T resource);
 }

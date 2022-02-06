@@ -3,40 +3,39 @@ using System.Threading.Tasks;
 using TerraformPluginDotNet.Serialization;
 using Tfplugin5;
 
-namespace TerraformPluginDotNet.ProviderConfig
+namespace TerraformPluginDotNet.ProviderConfig;
+
+class ProviderConfigurationHost<T>
 {
-    class ProviderConfigurationHost<T>
+    private readonly IProviderConfigurator<T> _providerConfigurator;
+    private readonly IDynamicValueSerializer _serializer;
+
+    public ProviderConfigurationHost(
+        IProviderConfigurator<T> providerConfigurator,
+        IDynamicValueSerializer serializer)
     {
-        private readonly IProviderConfigurator<T> _providerConfigurator;
-        private readonly IDynamicValueSerializer _serializer;
+        _providerConfigurator = providerConfigurator;
+        _serializer = serializer;
+    }
 
-        public ProviderConfigurationHost(
-            IProviderConfigurator<T> providerConfigurator,
-            IDynamicValueSerializer serializer)
+    public Task ConfigureAsync(Configure.Types.Request request)
+    {
+        var config = DeserializeDynamicValue(request.Config);
+        return _providerConfigurator.ConfigureAsync(config);
+    }
+
+    private T DeserializeDynamicValue(DynamicValue value)
+    {
+        if (!value.Msgpack.IsEmpty)
         {
-            _providerConfigurator = providerConfigurator;
-            _serializer = serializer;
+            return _serializer.DeserializeMsgPack<T>(value.Msgpack.Memory);
         }
 
-        public Task ConfigureAsync(Configure.Types.Request request)
+        if (!value.Json.IsEmpty)
         {
-            var config = DeserializeDynamicValue(request.Config);
-            return _providerConfigurator.ConfigureAsync(config);
+            return _serializer.DeserializeJson<T>(value.Json.Memory);
         }
 
-        private T DeserializeDynamicValue(DynamicValue value)
-        {
-            if (!value.Msgpack.IsEmpty)
-            {
-                return _serializer.DeserializeMsgPack<T>(value.Msgpack.Memory);
-            }
-
-            if (!value.Json.IsEmpty)
-            {
-                return _serializer.DeserializeJson<T>(value.Json.Memory);
-            }
-
-            throw new ArgumentException("Either MessagePack or Json must be non-empty.", nameof(value));
-        }
+        throw new ArgumentException("Either MessagePack or Json must be non-empty.", nameof(value));
     }
 }

@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TerraformPluginDotNet.ResourceProvider
+namespace TerraformPluginDotNet.ResourceProvider;
+
+public abstract class ResourceProvider<T>
 {
-    public abstract class ResourceProvider<T>
-    {
-    }
 }

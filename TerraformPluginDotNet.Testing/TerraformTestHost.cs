@@ -6,56 +6,56 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TerraformPluginDotNet.ResourceProvider;
 
-namespace TerraformPluginDotNet.Testing
+namespace TerraformPluginDotNet.Testing;
+
+public class TerraformTestHost : IAsyncDisposable
 {
-    public class TerraformTestHost : IAsyncDisposable
+    private readonly string _terraformBin;
+    private readonly int _port;
+
+    private readonly CancellationTokenSource _cancelHost;
+    private Task _host;
+
+    public TerraformTestHost(string terraformBin, int port = WebHostBuilderExtensions.DefaultPort)
     {
-        private readonly string _terraformBin;
-        private readonly int _port;
-
-        private readonly CancellationTokenSource _cancelHost;
-        private Task _host;
-
-        public TerraformTestHost(string terraformBin, int port = WebHostBuilderExtensions.DefaultPort)
+        if (string.IsNullOrEmpty(terraformBin) || !File.Exists(terraformBin))
         {
-            if (string.IsNullOrEmpty(terraformBin) || !File.Exists(terraformBin))
-            {
-                throw new ArgumentException($"Terraform binary not found at '{terraformBin}'.", nameof(terraformBin));
-            }
-
-            _cancelHost = new CancellationTokenSource();
-            _terraformBin = terraformBin;
-            _port = port;
+            throw new ArgumentException($"Terraform binary not found at '{terraformBin}'.", nameof(terraformBin));
         }
 
-        public void Start(string fullProviderName, Action<IServiceCollection, ResourceRegistry> configure)
-        {
-            if (_host != null)
-            {
-                throw new InvalidOperationException("Host has already been started.");
-            }
+        _cancelHost = new CancellationTokenSource();
+        _terraformBin = terraformBin;
+        _port = port;
+    }
 
-            _host = Host.CreateDefaultBuilder()
-                .ConfigureWebHostDefaults(x => x.ConfigureTerraformPlugin(configure, _port))
-                .ConfigureServices(x => x.Configure<TerraformPluginHostOptions>(x =>
-                {
-                    x.FullProviderName = fullProviderName;
-                    x.DebugMode = true;
-                }))
-                .Build()
-                .RunAsync(_cancelHost.Token);
+    public void Start(string fullProviderName, Action<IServiceCollection, ResourceRegistry> configure)
+    {
+        if (_host != null)
+        {
+            throw new InvalidOperationException("Host has already been started.");
         }
 
-        public async Task<ITerraformTestInstance> CreateTerraformTestInstanceAsync(string providerName, bool configure = true)
-        {
-            var workDir = Path.Combine(Path.GetTempPath(), $"TerraformPluginDotNet_{Guid.NewGuid()}");
-            Directory.CreateDirectory(workDir);
-
-            var terraform = new TerraformTestInstance(_terraformBin, providerName, _port, workDir);
-
-            if (configure)
+        _host = Host.CreateDefaultBuilder()
+            .ConfigureWebHostDefaults(x => x.ConfigureTerraformPlugin(configure, _port))
+            .ConfigureServices(x => x.Configure<TerraformPluginHostOptions>(x =>
             {
-                await File.WriteAllTextAsync(workDir + "/conf.tf", $@"
+                x.FullProviderName = fullProviderName;
+                x.DebugMode = true;
+            }))
+            .Build()
+            .RunAsync(_cancelHost.Token);
+    }
+
+    public async Task<ITerraformTestInstance> CreateTerraformTestInstanceAsync(string providerName, bool configure = true)
+    {
+        var workDir = Path.Combine(Path.GetTempPath(), $"TerraformPluginDotNet_{Guid.NewGuid()}");
+        Directory.CreateDirectory(workDir);
+
+        var terraform = new TerraformTestInstance(_terraformBin, providerName, _port, workDir);
+
+        if (configure)
+        {
+            await File.WriteAllTextAsync(workDir + "/conf.tf", $@"
 provider ""{providerName}"" {{}}
 terraform {{
   required_providers {{
@@ -67,21 +67,20 @@ terraform {{
 }}
 ");
 
-                await terraform.InitAsync();
-            }
-
-            return terraform;
+            await terraform.InitAsync();
         }
 
-        public async ValueTask DisposeAsync()
+        return terraform;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_host == null)
         {
-            if (_host == null)
-            {
-                return;
-            }
-
-            _cancelHost.Cancel();
-            await _host;
+            return;
         }
+
+        _cancelHost.Cancel();
+        await _host;
     }
 }

@@ -5,23 +5,22 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using MessagePack;
 
-namespace TerraformPluginDotNet.Serialization
+namespace TerraformPluginDotNet.Serialization;
+
+public class DefaultDynamicValueSerializer : IDynamicValueSerializer
 {
-    public class DefaultDynamicValueSerializer : IDynamicValueSerializer
+    public T DeserializeJson<T>(ReadOnlyMemory<byte> value)
     {
-        public T DeserializeJson<T>(ReadOnlyMemory<byte> value)
-        {
-            return JsonSerializer.Deserialize<T>(value.Span, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-        }
+        return JsonSerializer.Deserialize<T>(value.Span, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+    }
 
-        public T DeserializeMsgPack<T>(ReadOnlyMemory<byte> value)
-        {
-            return MessagePackSerializer.Deserialize<T>(value);
-        }
+    public T DeserializeMsgPack<T>(ReadOnlyMemory<byte> value)
+    {
+        return MessagePackSerializer.Deserialize<T>(value);
+    }
 
-        byte[] IDynamicValueSerializer.SerializeMsgPack<T>(T value)
-        {
-            return MessagePackSerializer.Serialize(value);
-        }
+    byte[] IDynamicValueSerializer.SerializeMsgPack<T>(T value)
+    {
+        return MessagePackSerializer.Serialize(value);
     }
 }

@@ -6,53 +6,52 @@ using Google.Protobuf;
 using TerraformPluginDotNet.Resources;
 using Tfplugin5;
 
-namespace TerraformPluginDotNet
+namespace TerraformPluginDotNet;
+
+static class SchemaBuilder
 {
-    static class SchemaBuilder
+    public static Schema BuildSchema<T>()
     {
-        public static Schema BuildSchema<T>()
+        var properties = typeof(T).GetProperties();
+
+        var block = new Schema.Types.Block();
+        foreach (var property in properties)
         {
-            var properties = typeof(T).GetProperties();
+            var key = property.GetCustomAttribute<MessagePack.KeyAttribute>();
+            var description = property.GetCustomAttribute<DescriptionAttribute>();
+            var required = property.GetCustomAttribute<RequiredAttribute>() != null;
+            var computed = property.GetCustomAttribute<ComputedAttribute>() != null;
 
-            var block = new Schema.Types.Block();
-            foreach (var property in properties)
+            block.Attributes.Add(new Schema.Types.Attribute
             {
-                var key = property.GetCustomAttribute<MessagePack.KeyAttribute>();
-                var description = property.GetCustomAttribute<DescriptionAttribute>();
-                var required = property.GetCustomAttribute<RequiredAttribute>() != null;
-                var computed = property.GetCustomAttribute<ComputedAttribute>() != null;
-
-                block.Attributes.Add(new Schema.Types.Attribute
-                {
-                    Name = key.StringKey,
-                    Type = ByteString.CopyFromUtf8($"\"{GetTerraformType(property.PropertyType)}\""),
-                    Description = description.Description,
-                    Optional = !required,
-                    Required = required,
-                    Computed = computed,
-                });
-            }
-
-            return new Schema
-            {
-                Version = 0,
-                Block = block,
-            };
+                Name = key.StringKey,
+                Type = ByteString.CopyFromUtf8($"\"{GetTerraformType(property.PropertyType)}\""),
+                Description = description.Description,
+                Optional = !required,
+                Required = required,
+                Computed = computed,
+            });
         }
 
-        private static string GetTerraformType(Type t)
+        return new Schema
         {
-            if (t == typeof(string))
-            {
-                return "string";
-            }
+            Version = 0,
+            Block = block,
+        };
+    }
 
-            if (t == typeof(int))
-            {
-                return "number";
-            }
-
-            throw new NotSupportedException();
+    private static string GetTerraformType(Type t)
+    {
+        if (t == typeof(string))
+        {
+            return "string";
         }
+
+        if (t == typeof(int))
+        {
+            return "number";
+        }
+
+        throw new NotSupportedException();
     }
 }
