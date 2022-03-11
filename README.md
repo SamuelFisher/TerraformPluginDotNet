@@ -36,10 +36,10 @@ dotnet publish -r linux-x64 -c release -p:PublishSingleFile=true
 mkdir -p ~/.terraform.d/plugins/example.com/example/dotnetsample/1.0.0/linux_amd64/
 
 # Copy binary
-cp ./bin/release/net5.0/linux-x64/publish/SampleProvider ~/.terraform.d/plugins/example.com/example/dotnetsample/1.0.0/linux_amd64/terraform-provider-dotnetsample
+cp ./bin/release/net6.0/linux-x64/publish/SampleProvider ~/.terraform.d/plugins/example.com/example/dotnetsample/1.0.0/linux_amd64/terraform-provider-dotnetsample
 
 # Copy log config
-cp ./bin/release/net5.0/linux-x64/publish/serilog.json ~/.terraform.d/plugins/example.com/example/dotnetsample/1.0.0/linux_amd64/serilog.json
+cp ./bin/release/net6.0/linux-x64/publish/serilog.json ~/.terraform.d/plugins/example.com/example/dotnetsample/1.0.0/linux_amd64/serilog.json
 ```
 
 3. Create a new Terraform project or open an existing one. The remaining commands
