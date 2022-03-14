@@ -13,7 +13,7 @@ For more information on this project, see
 Package                       | Version
 ------------------------------|---------
 TerraformPluginDotNet         | [![NuGet](https://img.shields.io/nuget/vpre/TerraformPluginDotNet.svg)](https://www.nuget.org/packages/TerraformPluginDotNet)
-TerraformPluginDotNet.Testing | [![NuGet](https://img.shields.io/nuget/vpre/TerraformPluginDotNet.svg)](https://www.nuget.org/packages/TerraformPluginDotNet.Testing)
+TerraformPluginDotNet.Testing | [![NuGet](https://img.shields.io/nuget/vpre/TerraformPluginDotNet.Testing.svg)](https://www.nuget.org/packages/TerraformPluginDotNet.Testing)
 
 ## Features
 
