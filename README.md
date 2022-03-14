@@ -2,12 +2,18 @@ TerraformPluginDotNet
 =====================
 
 [![Build status](https://github.com/SamuelFisher/TerraformPluginDotNet/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/SamuelFisher/TerraformPluginDotNet/actions)
-[![NuGet](https://img.shields.io/nuget/vpre/TerraformPluginDotNet.svg)](https://www.nuget.org/packages/TerraformPluginDotNet)
 
 Write custom Terraform providers in C#. See samples directory for an example provider.
 
 For more information on this project, see
 [this blog post](https://samuelfisher.co.uk/2021/01/terraform-provider-csharp).
+
+## Packages
+
+Package                       | Version
+------------------------------|---------
+TerraformPluginDotNet         | [![NuGet](https://img.shields.io/nuget/vpre/TerraformPluginDotNet.svg)](https://www.nuget.org/packages/TerraformPluginDotNet)
+TerraformPluginDotNet.Testing | [![NuGet](https://img.shields.io/nuget/vpre/TerraformPluginDotNet.svg)](https://www.nuget.org/packages/TerraformPluginDotNet.Testing)
 
 ## Features
 
