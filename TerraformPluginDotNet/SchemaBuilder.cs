@@ -51,6 +51,11 @@ static class SchemaBuilder
             return "number";
         }
 
+        if (t == typeof(bool))
+        {
+            return "bool";
+        }
+        
         throw new NotSupportedException();
     }
 }
