@@ -55,7 +55,7 @@ static class SchemaBuilder
         {
             return "bool";
         }
-        
+
         throw new NotSupportedException();
     }
 }
