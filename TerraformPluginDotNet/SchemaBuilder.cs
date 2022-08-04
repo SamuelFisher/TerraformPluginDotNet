@@ -53,7 +53,7 @@ static class SchemaBuilder
 
         if (t == typeof(bool))
         {
-            return "boolean";
+            return "bool";
         }
         
         throw new NotSupportedException();
