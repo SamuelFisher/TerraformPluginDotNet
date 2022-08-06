@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
@@ -51,6 +53,22 @@ resource ""test_resource"" ""test"" {{
 }}
 ");
 
-        await terraform.PlanAsync();
+        var plan = await terraform.PlanWithOutputAsync();
+
+        Assert.That(plan.ResourceChanges, Has.Count.EqualTo(1));
+        Assert.That(plan.ResourceChanges.Single().Change.Actions.Single(), Is.EqualTo("create"));
+        Assert.That(plan.ResourceChanges.Single().Change.Before, Is.Null);
+
+        var after = plan.ResourceChanges.Single().Change.After.ToJsonString(new JsonSerializerOptions() { WriteIndented = true });
+        var expected = @"
+{
+  ""boolean_attribute"": true,
+  ""double_attribute"": 1,
+  ""float_attribute"": 1,
+  ""int_attribute"": 1,
+  ""required_attribute"": ""value""
+}".Trim();
+
+        Assert.That(after, Is.EqualTo(expected));
     }
 }
