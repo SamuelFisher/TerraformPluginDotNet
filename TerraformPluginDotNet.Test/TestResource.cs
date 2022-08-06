@@ -16,10 +16,14 @@ public class TestResource
     [MessagePackFormatter(typeof(ComputedValueFormatter))]
     public string Id { get; set; }
 
-    [Key("required_attribute")]
+    [Key("required_string")]
     [Description("This is required.")]
     [Required]
-    public string RequiredAttribute { get; set; }
+    public string RequiredString { get; set; }
+
+    [Key("required_int")]
+    [Description("This is required.")]
+    public int RequiredInt { get; set; }
 
     [Key("int_attribute")]
     [Description("Int attribute.")]

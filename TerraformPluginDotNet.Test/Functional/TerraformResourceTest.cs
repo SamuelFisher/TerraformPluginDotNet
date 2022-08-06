@@ -45,7 +45,8 @@ public class TerraformResourceTest
 
         await File.WriteAllTextAsync(resourcePath, $@"
 resource ""test_resource"" ""test"" {{
-  required_attribute = ""value""
+  required_string = ""value""
+  required_int = 1
   int_attribute = 1
   boolean_attribute = true
   float_attribute = 1.0
@@ -66,7 +67,8 @@ resource ""test_resource"" ""test"" {{
   ""double_attribute"": 1,
   ""float_attribute"": 1,
   ""int_attribute"": 1,
-  ""required_attribute"": ""value""
+  ""required_int"": 1,
+  ""required_string"": ""value""
 }".Trim();
 
         Assert.That(after, Is.EqualTo(expected));
@@ -81,7 +83,8 @@ resource ""test_resource"" ""test"" {{
 
         await File.WriteAllTextAsync(resourcePath, $@"
 resource ""test_resource"" ""test"" {{
-  required_attribute = ""value""
+  required_string = ""value""
+  required_int = 1
 }}
 ");
 
@@ -98,7 +101,8 @@ resource ""test_resource"" ""test"" {{
   ""double_attribute"": null,
   ""float_attribute"": null,
   ""int_attribute"": null,
-  ""required_attribute"": ""value""
+  ""required_int"": 1,
+  ""required_string"": ""value""
 }".Trim();
 
         Assert.That(after, Is.EqualTo(expected));
