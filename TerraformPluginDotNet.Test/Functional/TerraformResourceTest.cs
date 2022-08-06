@@ -71,4 +71,36 @@ resource ""test_resource"" ""test"" {{
 
         Assert.That(after, Is.EqualTo(expected));
     }
+
+    [Test]
+    public async Task TestPlanCreateOnlyRequiredFields()
+    {
+        using var terraform = await _host.CreateTerraformTestInstanceAsync(ProviderName);
+
+        var resourcePath = Path.Combine(terraform.WorkDir, "file.tf");
+
+        await File.WriteAllTextAsync(resourcePath, $@"
+resource ""test_resource"" ""test"" {{
+  required_attribute = ""value""
+}}
+");
+
+        var plan = await terraform.PlanWithOutputAsync();
+
+        Assert.That(plan.ResourceChanges, Has.Count.EqualTo(1));
+        Assert.That(plan.ResourceChanges.Single().Change.Actions.Single(), Is.EqualTo("create"));
+        Assert.That(plan.ResourceChanges.Single().Change.Before, Is.Null);
+
+        var after = plan.ResourceChanges.Single().Change.After.ToJsonString(new JsonSerializerOptions() { WriteIndented = true });
+        var expected = @"
+{
+  ""boolean_attribute"": null,
+  ""double_attribute"": null,
+  ""float_attribute"": null,
+  ""int_attribute"": null,
+  ""required_attribute"": ""value""
+}".Trim();
+
+        Assert.That(after, Is.EqualTo(expected));
+    }
 }
