@@ -29,12 +29,12 @@ public class SampleProviderTest
         await _host.DisposeAsync();
     }
 
-    private void Configure(IServiceCollection services, ResourceRegistry registry)
+    private void Configure(IServiceCollection services, IResourceRegistryContext registryContext)
     {
         services.AddSingleton<SampleConfigurator>();
         services.AddTerraformProviderConfigurator<Configuration, SampleConfigurator>();
         services.AddSingleton<IResourceProvider<SampleFileResource>, SampleFileResourceProvider>();
-        registry.RegisterResource<SampleFileResource>($"{ProviderName}_file");
+        registryContext.RegisterResource<SampleFileResource>($"{ProviderName}_file");
     }
 
     [Test]

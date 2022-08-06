@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TerraformPluginDotNet.Testing\TerraformPluginDotNet.Testing.csproj" />
     <ProjectReference Include="..\TerraformPluginDotNet\TerraformPluginDotNet.csproj" />
   </ItemGroup>
 

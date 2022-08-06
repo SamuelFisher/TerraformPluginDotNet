@@ -1,12 +1,7 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using MessagePack;
+﻿using System.Linq;
 using NUnit.Framework;
 using TerraformPluginDotNet.ResourceProvider;
-using TerraformPluginDotNet.Resources;
-using Description = System.ComponentModel.DescriptionAttribute;
-using Key = MessagePack.KeyAttribute;
+using TerraformPluginDotNet.Schemas;
 
 namespace TerraformPluginDotNet.Test.ResourceProvider;
 
@@ -16,15 +11,15 @@ public class ResourceRegistryTest
     [Test]
     public void TestRegisteredSchema()
     {
-        var registry = new ResourceRegistry();
-        registry.RegisterResource<TestResource>("test");
+        var registration = new ResourceRegistryRegistration("test", typeof(TestResource));
+        var registry = new ResourceRegistry(new SchemaBuilder(), new[] { registration });
 
         var schema = registry.Schemas["test"];
 
         Assert.That(schema.Block, Is.Not.Null);
 
         var attributes = schema.Block.Attributes;
-        Assert.That(attributes, Has.Count.EqualTo(3));
+        Assert.That(attributes, Has.Count.EqualTo(6));
 
         var idAttr = attributes.Single(x => x.Name == "id");
         Assert.That(idAttr.Type.ToStringUtf8(), Is.EqualTo("\"string\""));
@@ -39,30 +34,24 @@ public class ResourceRegistryTest
         Assert.That(requiredAttr.Optional, Is.False);
         Assert.That(requiredAttr.Required, Is.True);
         Assert.That(requiredAttr.Computed, Is.False);
-
-        var optionalAttr = attributes.Single(x => x.Name == "optional_attribute");
-        Assert.That(optionalAttr.Type.ToStringUtf8(), Is.EqualTo("\"number\""));
-        Assert.That(optionalAttr.Description, Is.EqualTo("This is optional."));
-        Assert.That(optionalAttr.Optional, Is.True);
-        Assert.That(optionalAttr.Required, Is.False);
-        Assert.That(optionalAttr.Computed, Is.False);
     }
 
-    [MessagePackObject]
-    private class TestResource
+    [TestCase("int_attribute", ExpectedResult = @"""number""")]
+    [TestCase("boolean_attribute", ExpectedResult = @"""bool""")]
+    [TestCase("float_attribute", ExpectedResult = @"""number""")]
+    [TestCase("double_attribute", ExpectedResult = @"""number""")]
+    public string TestSchemaAttributeTypes(string name)
     {
-        [Key("id")]
-        [Computed]
-        [Description("Unique ID for this resource.")]
-        public string Id { get; set; }
+        var registration = new ResourceRegistryRegistration("test", typeof(TestResource));
+        var registry = new ResourceRegistry(new SchemaBuilder(), new[] { registration });
 
-        [Key("required_attribute")]
-        [Description("This is required.")]
-        [Required]
-        public string RequiredAttribute { get; set; }
+        var schema = registry.Schemas["test"];
 
-        [Key("optional_attribute")]
-        [Description("This is optional.")]
-        public int OptionalAttribute { get; set; }
+        Assert.That(schema.Block, Is.Not.Null, $"Unable to find attribute '{name}' on schema.");
+
+        var attributes = schema.Block.Attributes;
+        var attr = attributes.SingleOrDefault(x => x.Name == name);
+        Assert.That(attr, Is.Not.Null);
+        return attr.Type.ToStringUtf8();
     }
 }

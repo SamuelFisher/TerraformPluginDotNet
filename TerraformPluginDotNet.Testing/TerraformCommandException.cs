@@ -10,7 +10,7 @@ public class TerraformCommandException : Exception
         Command = command;
         ExitCode = exitCode;
         Output = output;
-        Message = $"Terraform exited with code {ExitCode}.";
+        Message = $"Terraform exited with code {ExitCode}.{Environment.NewLine}{Environment.NewLine}{output}";
     }
 
     internal TerraformCommandException(string command, TimeSpan? timedOutAfter, string output)
@@ -18,7 +18,7 @@ public class TerraformCommandException : Exception
         Command = command;
         TimedOutAfter = timedOutAfter;
         Output = output;
-        Message = $"Terraform timed out after {TimedOutAfter.Value.TotalSeconds:N2}s.";
+        Message = $"Terraform timed out after {TimedOutAfter.Value.TotalSeconds:N2}s.{Environment.NewLine}{Environment.NewLine}{output}";
     }
 
     public override string Message { get; }

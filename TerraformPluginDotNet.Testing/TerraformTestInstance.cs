@@ -25,7 +25,7 @@ class TerraformTestInstance : ITerraformTestInstance
 
     public TimeSpan DefaultCommandTimeout { get; set; } = TimeSpan.FromMinutes(1);
 
-    public async Task RunCommandAsync(string command, TimeSpan? timeout = null)
+    public async Task<string> RunCommandAsync(string command, TimeSpan? timeout = null)
     {
         timeout ??= DefaultCommandTimeout;
 
@@ -63,6 +63,8 @@ class TerraformTestInstance : ITerraformTestInstance
         {
             throw new TerraformCommandException(command, p.ExitCode, output.ToString());
         }
+
+        return output.ToString();
     }
 
     public void Dispose()

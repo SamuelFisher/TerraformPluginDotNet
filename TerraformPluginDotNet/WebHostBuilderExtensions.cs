@@ -10,7 +10,7 @@ public static class WebHostBuilderExtensions
 {
     public const int DefaultPort = 5344;
 
-    public static IWebHostBuilder ConfigureTerraformPlugin(this IWebHostBuilder webBuilder, Action<IServiceCollection, ResourceRegistry> configureRegistry, int port = DefaultPort)
+    public static IWebHostBuilder ConfigureTerraformPlugin(this IWebHostBuilder webBuilder, Action<IServiceCollection, IResourceRegistryContext> configureRegistry, int port = DefaultPort)
     {
         webBuilder.ConfigureKestrel(kestrel =>
         {
@@ -40,9 +40,10 @@ public static class WebHostBuilderExtensions
         webBuilder.ConfigureServices(services =>
         {
             services.AddOptions<TerraformPluginHostOptions>().ValidateDataAnnotations();
-            var registry = new ResourceRegistry();
-            services.AddSingleton(registry);
-            configureRegistry(services, registry);
+            services.AddSingleton<ResourceRegistry>();
+
+            var registryContext = new ServiceCollectionResourceRegistryContext(services);
+            configureRegistry(services, registryContext);
         });
 
         return webBuilder;

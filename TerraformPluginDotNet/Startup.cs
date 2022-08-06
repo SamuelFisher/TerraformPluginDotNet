@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using TerraformPluginDotNet.ProviderConfig;
 using TerraformPluginDotNet.ResourceProvider;
+using TerraformPluginDotNet.Schemas;
 using TerraformPluginDotNet.Serialization;
 using TerraformPluginDotNet.Services;
 
@@ -19,6 +20,7 @@ public class Startup
     {
         services.AddGrpc();
 
+        services.AddTransient<ISchemaBuilder, SchemaBuilder>();
         services.AddTransient(typeof(ProviderConfigurationHost<>));
         services.AddTransient(typeof(ResourceProviderHost<>));
         services.AddTransient(typeof(IResourceUpgrader<>), typeof(DefaultResourceUpgrader<>));
