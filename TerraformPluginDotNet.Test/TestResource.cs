@@ -23,17 +23,17 @@ public class TestResource
 
     [Key("int_attribute")]
     [Description("Int attribute.")]
-    public int IntAttribute { get; set; }
+    public int? IntAttribute { get; set; }
 
     [Key("boolean_attribute")]
     [Description("A boolean attribute.")]
-    public bool BooleanAttribute { get; set; }
+    public bool? BooleanAttribute { get; set; }
 
     [Key("float_attribute")]
     [Description("A float attribute.")]
-    public float FloatAttribute { get; set; }
+    public float? FloatAttribute { get; set; }
 
     [Key("double_attribute")]
     [Description("A double attribute.")]
-    public float DoubleAttribute { get; set; }
+    public float? DoubleAttribute { get; set; }
 }

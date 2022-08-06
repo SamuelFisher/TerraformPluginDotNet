@@ -41,6 +41,11 @@ class SchemaBuilder : ISchemaBuilder
 
     private static string GetTerraformType(Type t)
     {
+        if (t.IsValueType && Nullable.GetUnderlyingType(t) != null)
+        {
+            t = Nullable.GetUnderlyingType(t);
+        }
+
         if (t == typeof(string))
         {
             return "string";
