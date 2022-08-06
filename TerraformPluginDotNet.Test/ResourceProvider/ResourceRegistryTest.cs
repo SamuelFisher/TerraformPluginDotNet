@@ -19,7 +19,7 @@ public class ResourceRegistryTest
         Assert.That(schema.Block, Is.Not.Null);
 
         var attributes = schema.Block.Attributes;
-        Assert.That(attributes, Has.Count.EqualTo(6));
+        Assert.That(attributes, Has.Count.EqualTo(7));
 
         var idAttr = attributes.Single(x => x.Name == "id");
         Assert.That(idAttr.Type.ToStringUtf8(), Is.EqualTo("\"string\""));
@@ -28,12 +28,19 @@ public class ResourceRegistryTest
         Assert.That(idAttr.Required, Is.False);
         Assert.That(idAttr.Computed, Is.True);
 
-        var requiredAttr = attributes.Single(x => x.Name == "required_attribute");
-        Assert.That(requiredAttr.Type.ToStringUtf8(), Is.EqualTo("\"string\""));
-        Assert.That(requiredAttr.Description, Is.EqualTo("This is required."));
-        Assert.That(requiredAttr.Optional, Is.False);
-        Assert.That(requiredAttr.Required, Is.True);
-        Assert.That(requiredAttr.Computed, Is.False);
+        var requiredStrAttr = attributes.Single(x => x.Name == "required_string");
+        Assert.That(requiredStrAttr.Type.ToStringUtf8(), Is.EqualTo("\"string\""));
+        Assert.That(requiredStrAttr.Description, Is.EqualTo("This is required."));
+        Assert.That(requiredStrAttr.Optional, Is.False);
+        Assert.That(requiredStrAttr.Required, Is.True);
+        Assert.That(requiredStrAttr.Computed, Is.False);
+
+        var requiredIntAttr = attributes.Single(x => x.Name == "required_int");
+        Assert.That(requiredIntAttr.Type.ToStringUtf8(), Is.EqualTo("\"number\""));
+        Assert.That(requiredIntAttr.Description, Is.EqualTo("This is required."));
+        Assert.That(requiredIntAttr.Optional, Is.False);
+        Assert.That(requiredIntAttr.Required, Is.True);
+        Assert.That(requiredIntAttr.Computed, Is.False);
     }
 
     [TestCase("int_attribute", ExpectedResult = @"""number""")]

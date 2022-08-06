@@ -18,7 +18,7 @@ class SchemaBuilder : ISchemaBuilder
         {
             var key = property.GetCustomAttribute<MessagePack.KeyAttribute>();
             var description = property.GetCustomAttribute<DescriptionAttribute>();
-            var required = property.GetCustomAttribute<RequiredAttribute>() != null;
+            var required = IsRequiredAttribute(property);
             var computed = property.GetCustomAttribute<ComputedAttribute>() != null;
 
             block.Attributes.Add(new Schema.Types.Attribute
@@ -37,6 +37,12 @@ class SchemaBuilder : ISchemaBuilder
             Version = 0,
             Block = block,
         };
+    }
+
+    private static bool IsRequiredAttribute(PropertyInfo property)
+    {
+        return property.GetCustomAttribute<RequiredAttribute>() != null ||
+            (property.PropertyType.IsValueType && Nullable.GetUnderlyingType(property.PropertyType) == null);
     }
 
     private static string GetTerraformType(Type t)
