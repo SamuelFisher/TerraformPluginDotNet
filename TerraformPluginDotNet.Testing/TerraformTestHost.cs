@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,8 +18,10 @@ public class TerraformTestHost : IAsyncDisposable
     private readonly CancellationTokenSource _cancelHost;
     private Task _host;
 
-    public TerraformTestHost(string terraformBin, int port = WebHostBuilderExtensions.DefaultPort)
+    public TerraformTestHost(string terraformBin, int? port = default)
     {
+        port ??= FindFreePort();
+
         if (string.IsNullOrEmpty(terraformBin) || !File.Exists(terraformBin))
         {
             throw new ArgumentException($"Terraform binary not found at '{terraformBin}'.", nameof(terraformBin));
@@ -25,10 +29,10 @@ public class TerraformTestHost : IAsyncDisposable
 
         _cancelHost = new CancellationTokenSource();
         _terraformBin = terraformBin;
-        _port = port;
+        _port = port.Value;
     }
 
-    public void Start(string fullProviderName, Action<IServiceCollection, ResourceRegistry> configure)
+    public void Start(string fullProviderName, Action<IServiceCollection, IResourceRegistryContext> configure)
     {
         if (_host != null)
         {
@@ -82,5 +86,25 @@ terraform {{
 
         _cancelHost.Cancel();
         await _host;
+    }
+
+    private static int FindFreePort()
+    {
+        int port = 0;
+        var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+        try
+        {
+            var endPoint = new IPEndPoint(IPAddress.Loopback, 0);
+            socket.Bind(endPoint);
+            endPoint = (IPEndPoint)socket.LocalEndPoint;
+            port = endPoint.Port;
+        }
+        finally
+        {
+            socket.Close();
+        }
+
+        return port;
     }
 }

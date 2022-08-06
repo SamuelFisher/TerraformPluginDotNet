@@ -11,7 +11,7 @@ namespace TerraformPluginDotNet;
 
 public class Program
 {
-    public static async Task RunAsync(string[] args, string fullProviderName, Action<IServiceCollection, ResourceRegistry> configure, CancellationToken token = default)
+    public static async Task RunAsync(string[] args, string fullProviderName, Action<IServiceCollection, IResourceRegistryContext> configure, CancellationToken token = default)
     {
         var serilogConfiguration = new ConfigurationBuilder()
             .AddJsonFile("serilog.json", optional: true)
@@ -39,7 +39,7 @@ public class Program
     public static IHostBuilder CreateHostBuilder(
         string[] args,
         string fullProviderName,
-        Action<IServiceCollection, ResourceRegistry> configure) =>
+        Action<IServiceCollection, IResourceRegistryContext> configure) =>
         Host.CreateDefaultBuilder(args)
             .ConfigureAppConfiguration(configuration => configuration.AddJsonFile("serilog.json", optional: true))
             .ConfigureServices((host, services) =>

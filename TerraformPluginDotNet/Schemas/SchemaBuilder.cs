@@ -5,13 +5,13 @@ using Google.Protobuf;
 using TerraformPluginDotNet.Resources;
 using Tfplugin5;
 
-namespace TerraformPluginDotNet;
+namespace TerraformPluginDotNet.Schemas;
 
-static class SchemaBuilder
+class SchemaBuilder : ISchemaBuilder
 {
-    public static Schema BuildSchema<T>()
+    public Schema BuildSchema(Type type)
     {
-        var properties = typeof(T).GetProperties();
+        var properties = type.GetProperties();
 
         var block = new Schema.Types.Block();
         foreach (var property in properties)
@@ -46,7 +46,7 @@ static class SchemaBuilder
             return "string";
         }
 
-        if (t == typeof(int))
+        if (t == typeof(int) || t == typeof(float) || t == typeof(double))
         {
             return "number";
         }
