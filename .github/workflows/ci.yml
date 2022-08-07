@@ -36,7 +36,7 @@ jobs:
       if: startsWith(matrix.os, 'ubuntu')
       run: |
         dotnet publish samples/SampleProvider/SampleProvider/SampleProvider.csproj -r linux-x64 -c Release -p:PublishSingleFile=true 
-        cp samples/SampleProvider/SampleProvider/bin/Release/*.zip e2e/providers/example.com/example/sampleprovider
+        cp samples/SampleProvider/SampleProvider/bin/Release/net6.0/*.zip e2e/providers/example.com/example/sampleprovider
         cd e2e
         terraform init
         terraform plan
