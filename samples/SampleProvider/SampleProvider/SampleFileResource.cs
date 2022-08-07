@@ -7,6 +7,7 @@ using Key = MessagePack.KeyAttribute;
 
 namespace SampleProvider;
 
+[SchemaVersion(1)]
 [MessagePackObject]
 public class SampleFileResource
 {
