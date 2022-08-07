@@ -37,12 +37,10 @@ public static class WebHostBuilderExtensions
         });
 
         webBuilder.UseStartup<Startup>();
+
         webBuilder.ConfigureServices(services =>
         {
-            services.AddOptions<TerraformPluginHostOptions>().ValidateDataAnnotations();
-            services.AddSingleton<ResourceRegistry>();
-
-            var registryContext = new ServiceCollectionResourceRegistryContext(services);
+            var registryContext = services.AddTerraformResourceRegistry();
             configureRegistry(services, registryContext);
         });
 
