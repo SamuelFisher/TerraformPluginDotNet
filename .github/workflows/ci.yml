@@ -36,7 +36,7 @@ jobs:
       env:
         RUNTIME_IDENTIFIER: "${{ startsWith(matrix.os, 'windows') && 'win-x64' || 'linux-x64' }}"
       run: |
-        dotnet publish samples/SampleProvider/SampleProvider/SampleProvider.csproj -r $RUNTIME_IDENTIFIER -c Release -p:PublishSingleFile=true 
+        dotnet publish samples/SampleProvider/SampleProvider/SampleProvider.csproj -r {{ env.RUNTIME_IDENTIFIER }} -c Release -p:PublishSingleFile=true 
         cp samples/SampleProvider/SampleProvider/bin/Release/net6.0/*.zip e2e/providers/example.com/example/sampleprovider
         cd e2e
         TF_CLI_CONFIG_FILE=cli.tfrc terraform init
