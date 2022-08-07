@@ -12,7 +12,7 @@ namespace SampleProvider.Test;
 [TestFixture(Category = "Functional", Explicit = true)]
 public class SampleProviderTest
 {
-    private const string ProviderName = "dotnetsample";
+    private const string ProviderName = "sampleprovider";
 
     private TerraformTestHost _host;
 
@@ -47,7 +47,7 @@ public class SampleProviderTest
         var fileContent = "this is a test";
 
         await File.WriteAllTextAsync(resourcePath, $@"
-resource ""dotnetsample_file"" ""demo_file"" {{
+resource ""{ProviderName}_file"" ""demo_file"" {{
 path = ""{testFilePath.Replace("\\", "\\\\")}""
 content = ""{fileContent}""
 }}
@@ -69,7 +69,7 @@ content = ""{fileContent}""
         var testFilePath = Path.Combine(terraform.WorkDir, "test.txt");
 
         await File.WriteAllTextAsync(resourcePath, $@"
-resource ""dotnetsample_file"" ""demo_file"" {{
+resource ""{ProviderName}_file"" ""demo_file"" {{
 path = ""{testFilePath.Replace("\\", "\\\\")}""
 content = ""Content 1""
 }}
@@ -80,7 +80,7 @@ content = ""Content 1""
 
         var updatedContent = "Content 2";
         await File.WriteAllTextAsync(resourcePath, $@"
-resource ""dotnetsample_file"" ""demo_file"" {{
+resource ""{ProviderName}_file"" ""demo_file"" {{
 path = ""{testFilePath.Replace("\\", "\\\\")}""
 content = ""{updatedContent}""
 }}
@@ -102,7 +102,7 @@ content = ""{updatedContent}""
         var testFilePath = Path.Combine(terraform.WorkDir, "test.txt");
 
         await File.WriteAllTextAsync(resourcePath, $@"
-resource ""dotnetsample_file"" ""demo_file"" {{
+resource ""{ProviderName}_file"" ""demo_file"" {{
 path = ""{testFilePath.Replace("\\", "\\\\")}""
 content = ""Content""
 }}
@@ -141,7 +141,7 @@ terraform {{
         var fileContent = "this is a test";
 
         await File.WriteAllTextAsync(resourcePath, $@"
-resource ""dotnetsample_file"" ""demo_file"" {{
+resource ""{ProviderName}_file"" ""demo_file"" {{
 path = ""{testFilePath.Replace("\\", "\\\\")}""
 content = ""{fileContent}""
 }}
