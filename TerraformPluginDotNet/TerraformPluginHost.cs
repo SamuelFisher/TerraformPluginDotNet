@@ -9,7 +9,10 @@ using TerraformPluginDotNet.ResourceProvider;
 
 namespace TerraformPluginDotNet;
 
-public class Program
+/// <summary>
+/// Use this class to create a default host for a Terraform plugin.
+/// </summary>
+public static class TerraformPluginHost
 {
     public static async Task RunAsync(string[] args, string fullProviderName, Action<IServiceCollection, IResourceRegistryContext> configure, CancellationToken token = default)
     {

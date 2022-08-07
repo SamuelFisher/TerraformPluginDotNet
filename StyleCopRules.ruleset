@@ -26,8 +26,10 @@
     <Rule Id="CS1587" Action="None" />
     <Rule Id="CS1591" Action="None" />
     <Rule Id="CS1712" Action="None" />
+    <Rule Id="SA1512" Action="None" />
     <Rule Id="SA1601" Action="None" />
     <Rule Id="SA1602" Action="None" />
+    <Rule Id="SA1611" Action="None" />
     <Rule Id="SA1618" Action="None" />
   </Rules>
 </RuleSet>
