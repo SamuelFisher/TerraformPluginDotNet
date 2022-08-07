@@ -7,6 +7,7 @@ using KeyAttribute = MessagePack.KeyAttribute;
 
 namespace TerraformPluginDotNet.Test;
 
+[SchemaVersion(1)]
 [MessagePackObject]
 public class TestResource
 {

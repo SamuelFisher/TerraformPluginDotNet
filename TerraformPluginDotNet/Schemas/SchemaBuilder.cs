@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using Google.Protobuf;
+using Microsoft.Extensions.Logging;
 using TerraformPluginDotNet.Resources;
 using Tfplugin5;
 
@@ -9,8 +10,21 @@ namespace TerraformPluginDotNet.Schemas;
 
 class SchemaBuilder : ISchemaBuilder
 {
+    private readonly ILogger<SchemaBuilder> _logger;
+
+    public SchemaBuilder(ILogger<SchemaBuilder> logger)
+    {
+        _logger = logger;
+    }
+
     public Schema BuildSchema(Type type)
     {
+        var schemaVersionAttribute = type.GetCustomAttribute<SchemaVersionAttribute>();
+        if (schemaVersionAttribute == null)
+        {
+            _logger.LogWarning($"Missing {nameof(SchemaVersionAttribute)} when generating schema for {type.FullName}.");
+        }
+
         var properties = type.GetProperties();
 
         var block = new Schema.Types.Block();
@@ -34,7 +48,7 @@ class SchemaBuilder : ISchemaBuilder
 
         return new Schema
         {
-            Version = 0,
+            Version = schemaVersionAttribute?.SchemaVersion ?? 0,
             Block = block,
         };
     }

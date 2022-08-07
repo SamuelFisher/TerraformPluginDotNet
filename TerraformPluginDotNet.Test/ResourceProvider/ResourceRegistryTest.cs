@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 using TerraformPluginDotNet.ResourceProvider;
 using TerraformPluginDotNet.Schemas;
@@ -12,7 +13,7 @@ public class ResourceRegistryTest
     public void TestRegisteredSchema()
     {
         var registration = new ResourceRegistryRegistration("test", typeof(TestResource));
-        var registry = new ResourceRegistry(new SchemaBuilder(), new[] { registration });
+        var registry = new ResourceRegistry(new SchemaBuilder(NullLogger<SchemaBuilder>.Instance), new[] { registration });
 
         var schema = registry.Schemas["test"];
 
@@ -50,7 +51,7 @@ public class ResourceRegistryTest
     public string TestSchemaAttributeTypes(string name)
     {
         var registration = new ResourceRegistryRegistration("test", typeof(TestResource));
-        var registry = new ResourceRegistry(new SchemaBuilder(), new[] { registration });
+        var registry = new ResourceRegistry(new SchemaBuilder(NullLogger<SchemaBuilder>.Instance), new[] { registration });
 
         var schema = registry.Schemas["test"];
 
