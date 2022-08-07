@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
@@ -57,8 +58,8 @@ public record TerraformJsonChange
     public ImmutableList<string> Actions { get; init; }
 
     [JsonPropertyName("before")]
-    public JsonValue Before { get; init; }
+    public JsonElement Before { get; init; }
 
     [JsonPropertyName("after")]
-    public JsonValue After { get; init; }
+    public JsonElement After { get; init; }
 }

@@ -58,9 +58,9 @@ resource ""test_resource"" ""test"" {{
 
         Assert.That(plan.ResourceChanges, Has.Count.EqualTo(1));
         Assert.That(plan.ResourceChanges.Single().Change.Actions.Single(), Is.EqualTo("create"));
-        Assert.That(plan.ResourceChanges.Single().Change.Before, Is.Null);
+        Assert.That(plan.ResourceChanges.Single().Change.Before.ValueKind, Is.EqualTo(JsonValueKind.Null));
 
-        var after = plan.ResourceChanges.Single().Change.After.ToJsonString(new JsonSerializerOptions() { WriteIndented = true });
+        var after = JsonSerializer.Serialize(plan.ResourceChanges.Single().Change.After, new JsonSerializerOptions() { WriteIndented = true });
         var expected = @"
 {
   ""boolean_attribute"": true,
@@ -92,9 +92,9 @@ resource ""test_resource"" ""test"" {{
 
         Assert.That(plan.ResourceChanges, Has.Count.EqualTo(1));
         Assert.That(plan.ResourceChanges.Single().Change.Actions.Single(), Is.EqualTo("create"));
-        Assert.That(plan.ResourceChanges.Single().Change.Before, Is.Null);
+        Assert.That(plan.ResourceChanges.Single().Change.Before.ValueKind, Is.EqualTo(JsonValueKind.Null));
 
-        var after = plan.ResourceChanges.Single().Change.After.ToJsonString(new JsonSerializerOptions() { WriteIndented = true });
+        var after = JsonSerializer.Serialize(plan.ResourceChanges.Single().Change.After, new JsonSerializerOptions() { WriteIndented = true });
         var expected = @"
 {
   ""boolean_attribute"": null,
