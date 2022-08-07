@@ -2,13 +2,11 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
+    <PublishSingleFile>true</PublishSingleFile>
+    <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
     <IsPackable>false</IsPackable>
     <AssemblyName>terraform-provider-$([System.String]::Copy($(MSBuildProjectName)).ToLowerInvariant())</AssemblyName>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="MessagePack" Version="2.3.85" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\TerraformPluginDotNet\TerraformPluginDotNet.csproj" />
   </ItemGroup>
