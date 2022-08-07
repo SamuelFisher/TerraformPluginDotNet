@@ -32,6 +32,14 @@ jobs:
       run: echo "TF_PLUGIN_DOTNET_TEST_TF_BIN=$(get-command terraform | select-object -ExpandProperty source)" >> $env:GITHUB_ENV
     - name: Functional tests
       run: dotnet test --no-restore --filter Category=Functional
+    - name: E2E tests
+      if: startsWith(matrix.os, 'ubuntu')
+      run: |
+        dotnet publish samples/SampleProvider/SampleProvider/SampleProvider.csproj -r linux-x64 -c Release -p:PublishSingleFile=true 
+        cp samples/SampleProvider/SampleProvider/bin/Release/*.zip e2e/providers/example.com/example/sampleprovider
+        cd e2e
+        terraform init
+        terraform plan
     - name: Pack
       run: dotnet pack --no-restore --configuration Release -o packages
     - name: Upload packages as artefacts

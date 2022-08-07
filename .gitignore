@@ -206,3 +206,7 @@ launchSettings.json
 **/wwwroot/assets/
 
 test.runsettings
+/e2e/.terraform/
+/e2e/providers/**/*.zip
+!/e2e/providers/**/.gitkeep
+/e2e/.terraform.lock.hcl

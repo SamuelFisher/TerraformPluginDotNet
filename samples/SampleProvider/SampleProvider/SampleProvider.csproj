@@ -3,6 +3,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
     <IsPackable>false</IsPackable>
+    <AssemblyName>terraform-provider-$([System.String]::Copy($(MSBuildProjectName)).ToLowerInvariant())</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MessagePack" Version="2.3.85" />
@@ -11,4 +12,15 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\TerraformPluginDotNet\TerraformPluginDotNet.csproj" />
   </ItemGroup>
+  <Target Name="PublishTerraformProvider" AfterTargets="Publish">
+    <PropertyGroup>
+      <TerraformTarget>unknown</TerraformTarget>
+      <TerraformTarget Condition="'$(RuntimeIdentifier)'=='win-x64'">windows_amd64</TerraformTarget>
+      <TerraformTarget Condition="'$(RuntimeIdentifier)'=='linux-x64'">linux_amd64</TerraformTarget>
+    </PropertyGroup>
+    <ZipDirectory
+      SourceDirectory="$(OutputPath)\publish\"
+      DestinationFile="$(OutputPath)\..\$(AssemblyName)_$(Version)_$(TerraformTarget).zip"
+      Overwrite="true" />
+  </Target>
 </Project>
