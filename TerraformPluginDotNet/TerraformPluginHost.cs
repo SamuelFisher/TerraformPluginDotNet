@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Serilog;
 using TerraformPluginDotNet.ResourceProvider;
@@ -44,7 +43,11 @@ public static class TerraformPluginHost
         string fullProviderName,
         Action<IServiceCollection, IResourceRegistryContext> configure) =>
         Host.CreateDefaultBuilder(args)
-            .ConfigureAppConfiguration(configuration => configuration.AddJsonFile("serilog.json", optional: true))
+            .ConfigureAppConfiguration(configuration =>
+            {
+                configuration.AddJsonFile(Path.Combine(AppContext.BaseDirectory, "serilog.json"), optional: true);
+                configuration.AddJsonFile("serilog.json", optional: true);
+            })
             .ConfigureServices((host, services) =>
             {
                 services.Configure<TerraformPluginHostOptions>(host.Configuration);
@@ -57,7 +60,6 @@ public static class TerraformPluginHost
             .ConfigureWebHostDefaults(webBuilder =>
             {
                 webBuilder.ConfigureTerraformPlugin(configure);
-                webBuilder.ConfigureLogging((_, x) => x.ClearProviders().AddSerilog());
             })
             .UseSerilog((context, services, configuration) =>
             {
