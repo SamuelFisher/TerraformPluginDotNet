@@ -2,6 +2,10 @@
 
 namespace TerraformPluginDotNet.ResourceProvider;
 
+/// <summary>
+/// Default implementation of a resource upgrader that does nothing, and assumes
+/// previous versions can be deserialized from JSON into the latest schema version.
+/// </summary>
 class DefaultResourceUpgrader<T> : IResourceUpgrader<T>
 {
     private readonly IDynamicValueSerializer _serializer;
