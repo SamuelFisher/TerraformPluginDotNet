@@ -3,7 +3,7 @@ TerraformPluginDotNet
 
 [![Build status](https://github.com/SamuelFisher/TerraformPluginDotNet/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/SamuelFisher/TerraformPluginDotNet/actions)
 
-Write custom Terraform providers in C#. See samples directory for an example provider.
+Write custom Terraform providers in C#. See the samples directory for an example provider.
 
 For more information on this project, see
 [this blog post](https://samuelfisher.co.uk/2021/01/terraform-provider-csharp).
@@ -21,6 +21,53 @@ Currently supports basic functionality for creating, updating and deleting
 custom resources.
 
 ## Usage
+
+### Defining Resources
+
+To define a custom Terraform resource, create a class to represent the resource:
+
+```csharp
+[SchemaVersion(1)]
+[MessagePackObject]
+public class MyResource
+{
+    [Key("id")]
+    [Computed]
+    [Description("Unique ID for this resource.")]
+    [MessagePackFormatter(typeof(ComputedValueFormatter))]
+    public string Id { get; set; }
+
+    [Key("some_value")]
+    [JsonPropertyName("some_value")]
+    [Description("Some value in the resource.")]
+    [Required]
+    public string SomeValue { get; set; }
+}
+```
+
+Please note:
+
+1. The class must be serializable as MessagePack.
+2. The class must be serializable by `System.Text.Json`.
+    - Currently, `JsonPropertyName` must be specified to match multi-word property names as camel case.
+
+Create an `IResourceProvier<T>` for the resource:
+
+```csharp
+public class MyResourceProvider : IResourceProvider<MyResource>
+{
+    public Task<MyResource> PlanAsync(MyResource prior, MyResource proposed)
+    {
+        // Do something
+    }
+
+    ...
+}
+```
+
+See the samples directory for a full example.
+
+### Usage In Terraform
 
 This section explains how to use the `samples/SampleProvider` project with
 Terraform. To define your own provider and resource types, create your own
