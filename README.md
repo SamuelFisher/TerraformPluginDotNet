@@ -49,7 +49,7 @@ Please note:
 
 1. The class must be serializable as MessagePack.
 2. The class must be serializable by `System.Text.Json`.
-    - Currently, `JsonPropertyName` must be specified to match multi-word property names as camel case.
+    - Currently, `JsonPropertyName` must be specified to match multi-word property names as snake case.
 
 Create an `IResourceProvier<T>` for the resource:
 
