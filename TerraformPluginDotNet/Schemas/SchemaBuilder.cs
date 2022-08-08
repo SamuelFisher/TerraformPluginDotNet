@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Reflection;
 using Google.Protobuf;
 using Microsoft.Extensions.Logging;
@@ -38,7 +39,7 @@ class SchemaBuilder : ISchemaBuilder
             block.Attributes.Add(new Schema.Types.Attribute
             {
                 Name = key.StringKey,
-                Type = ByteString.CopyFromUtf8($"\"{GetTerraformType(property.PropertyType)}\""),
+                Type = ByteString.CopyFromUtf8(GetTerraformType(property.PropertyType)),
                 Description = description.Description,
                 Optional = !required,
                 Required = required,
@@ -68,19 +69,37 @@ class SchemaBuilder : ISchemaBuilder
 
         if (t == typeof(string))
         {
-            return "string";
+            return "\"string\"";
         }
 
         if (t == typeof(int) || t == typeof(float) || t == typeof(double))
         {
-            return "number";
+            return "\"number\"";
         }
 
         if (t == typeof(bool))
         {
-            return "bool";
+            return "\"bool\"";
         }
 
-        throw new NotSupportedException();
+        var dictionaryType = t.GetInterfaces()
+            .FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IDictionary<,>) && x.GenericTypeArguments[0] == typeof(string));
+
+        if (dictionaryType != null)
+        {
+            var valueType = GetTerraformType(t.GenericTypeArguments[1]);
+            return $"[\"map\",{valueType}]";
+        }
+
+        var collectionType = t.GetInterfaces()
+            .FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ICollection<>));
+
+        if (collectionType != null)
+        {
+            var elementType = GetTerraformType(collectionType.GenericTypeArguments.Single());
+            return $"[\"list\",{elementType}]";
+        }
+
+        throw new NotSupportedException($"Unable to convert {t.FullName} to Terraform type.");
     }
 }

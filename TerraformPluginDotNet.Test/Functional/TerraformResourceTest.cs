@@ -43,15 +43,27 @@ public class TerraformResourceTest
 
         var resourcePath = Path.Combine(terraform.WorkDir, "file.tf");
 
-        await File.WriteAllTextAsync(resourcePath, $@"
-resource ""test_resource"" ""test"" {{
+        await File.WriteAllTextAsync(resourcePath, @"
+resource ""test_resource"" ""test"" {
   required_string = ""value""
   required_int = 1
   int_attribute = 1
   boolean_attribute = true
   float_attribute = 1.0
   double_attribute = 1.0
-}}
+  string_list_attribute = [""one"", ""two"", ""three""]
+  int_list_attribute = [1, 2, 3]
+  string_map_attribute = {
+    a = ""one"",
+    b = ""two"",
+    c = ""three""
+  }
+  int_map_attribute = {
+    a = 1,
+    b = 2,
+    c = 3
+  }
+}
 ");
 
         var plan = await terraform.PlanWithOutputAsync();
@@ -67,8 +79,28 @@ resource ""test_resource"" ""test"" {{
   ""double_attribute"": 1,
   ""float_attribute"": 1,
   ""int_attribute"": 1,
+  ""int_list_attribute"": [
+    1,
+    2,
+    3
+  ],
+  ""int_map_attribute"": {
+    ""a"": 1,
+    ""b"": 2,
+    ""c"": 3
+  },
   ""required_int"": 1,
-  ""required_string"": ""value""
+  ""required_string"": ""value"",
+  ""string_list_attribute"": [
+    ""one"",
+    ""two"",
+    ""three""
+  ],
+  ""string_map_attribute"": {
+    ""a"": ""one"",
+    ""b"": ""two"",
+    ""c"": ""three""
+  }
 }".Trim();
 
         Assert.That(after, Is.EqualTo(expected));
@@ -81,11 +113,11 @@ resource ""test_resource"" ""test"" {{
 
         var resourcePath = Path.Combine(terraform.WorkDir, "file.tf");
 
-        await File.WriteAllTextAsync(resourcePath, $@"
-resource ""test_resource"" ""test"" {{
+        await File.WriteAllTextAsync(resourcePath, @"
+resource ""test_resource"" ""test"" {
   required_string = ""value""
   required_int = 1
-}}
+}
 ");
 
         var plan = await terraform.PlanWithOutputAsync();
@@ -101,8 +133,12 @@ resource ""test_resource"" ""test"" {{
   ""double_attribute"": null,
   ""float_attribute"": null,
   ""int_attribute"": null,
+  ""int_list_attribute"": null,
+  ""int_map_attribute"": null,
   ""required_int"": 1,
-  ""required_string"": ""value""
+  ""required_string"": ""value"",
+  ""string_list_attribute"": null,
+  ""string_map_attribute"": null
 }".Trim();
 
         Assert.That(after, Is.EqualTo(expected));

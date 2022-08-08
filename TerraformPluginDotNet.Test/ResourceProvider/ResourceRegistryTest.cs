@@ -20,7 +20,7 @@ public class ResourceRegistryTest
         Assert.That(schema.Block, Is.Not.Null);
 
         var attributes = schema.Block.Attributes;
-        Assert.That(attributes, Has.Count.EqualTo(7));
+        Assert.That(attributes, Has.Count.EqualTo(11));
 
         var idAttr = attributes.Single(x => x.Name == "id");
         Assert.That(idAttr.Type.ToStringUtf8(), Is.EqualTo("\"string\""));
@@ -48,6 +48,10 @@ public class ResourceRegistryTest
     [TestCase("boolean_attribute", ExpectedResult = @"""bool""")]
     [TestCase("float_attribute", ExpectedResult = @"""number""")]
     [TestCase("double_attribute", ExpectedResult = @"""number""")]
+    [TestCase("string_list_attribute", ExpectedResult = @"[""list"",""string""]")]
+    [TestCase("int_list_attribute", ExpectedResult = @"[""list"",""number""]")]
+    [TestCase("string_map_attribute", ExpectedResult = @"[""map"",""string""]")]
+    [TestCase("int_map_attribute", ExpectedResult = @"[""map"",""number""]")]
     public string TestSchemaAttributeTypes(string name)
     {
         var registration = new ResourceRegistryRegistration("test", typeof(TestResource));
