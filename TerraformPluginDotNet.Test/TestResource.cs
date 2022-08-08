@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using MessagePack;
 using TerraformPluginDotNet.Resources;
@@ -41,4 +42,20 @@ public class TestResource
     [Key("double_attribute")]
     [Description("A double attribute.")]
     public float? DoubleAttribute { get; set; }
+
+    [Key("string_list_attribute")]
+    [Description("A string list attribute.")]
+    public List<string> StringListAttribute { get; set; }
+
+    [Key("int_list_attribute")]
+    [Description("An int list attribute.")]
+    public List<int> IntListAttribute { get; set; }
+
+    [Key("string_map_attribute")]
+    [Description("A string map attribute.")]
+    public Dictionary<string, string> StringMapAttribute { get; set; }
+
+    [Key("int_map_attribute")]
+    [Description("An int map attribute.")]
+    public Dictionary<string, int> IntMapAttribute { get; set; }
 }
