@@ -37,4 +37,9 @@ public static class TerraformTestInstanceExtensions
     {
         return terraform.RunCommandAsync("apply -no-color -input=false -auto-approve=true");
     }
+
+    public static Task<string> ImportAsync(this ITerraformTestInstance terraform, string address, string id)
+    {
+        return terraform.RunCommandAsync($"import -no-color {address} {id}");
+    }
 }

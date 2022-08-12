@@ -90,6 +90,20 @@ class ResourceProviderHost<T>
         }
     }
 
+    public async Task<ImportResourceState.Types.Response> ImportResourceState(ImportResourceState.Types.Request request)
+    {
+        var imported = await _resourceProvider.ImportAsync(request.Id);
+
+        var response = new ImportResourceState.Types.Response();
+        response.ImportedResources.AddRange(imported.Select(resource => new ImportResourceState.Types.ImportedResource
+        {
+            TypeName = request.TypeName,
+            State = SerializeDynamicValue(resource),
+        }));
+
+        return response;
+    }
+
     private T DeserializeDynamicValue(DynamicValue value)
     {
         if (!value.Msgpack.IsEmpty)

@@ -132,6 +132,25 @@ class Terraform5ProviderService : Provider.ProviderBase
             .Invoke(provider, new[] { request });
     }
 
+    public override Task<ImportResourceState.Types.Response> ImportResourceState(ImportResourceState.Types.Request request, ServerCallContext context)
+    {
+        if (!_resourceRegistry.Types.TryGetValue(request.TypeName, out var resourceType))
+        {
+            return Task.FromResult(new ImportResourceState.Types.Response
+            {
+                Diagnostics =
+                    {
+                        new Diagnostic { Detail = "Unkonwn type name." },
+                    },
+            });
+        }
+
+        var providerHostType = typeof(ResourceProviderHost<>).MakeGenericType(resourceType);
+        var provider = _serviceProvider.GetService(providerHostType);
+        return (Task<ImportResourceState.Types.Response>)providerHostType.GetMethod(nameof(ResourceProviderHost<object>.ImportResourceState))
+            .Invoke(provider, new[] { request });
+    }
+
     public override Task<PrepareProviderConfig.Types.Response> PrepareProviderConfig(PrepareProviderConfig.Types.Request request, ServerCallContext context)
     {
         return Task.FromResult(new PrepareProviderConfig.Types.Response());
