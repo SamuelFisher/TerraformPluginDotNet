@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TerraformPluginDotNet.ResourceProvider;
 
@@ -30,5 +31,10 @@ class TestResourceProvider : IResourceProvider<TestResource>
     public Task<TestResource> UpdateAsync(TestResource prior, TestResource planned)
     {
         return Task.FromResult(planned);
+    }
+
+    public Task<IList<TestResource>> ImportAsync(string id)
+    {
+        throw new NotSupportedException();
     }
 }

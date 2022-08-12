@@ -11,4 +11,6 @@ public interface IResourceProvider<T>
     Task<T> UpdateAsync(T prior, T planned);
 
     Task DeleteAsync(T resource);
+
+    Task<IList<T>> ImportAsync(string id);
 }

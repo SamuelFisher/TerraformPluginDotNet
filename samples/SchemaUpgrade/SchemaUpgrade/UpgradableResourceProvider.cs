@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TerraformPluginDotNet.ResourceProvider;
 
@@ -35,5 +36,10 @@ public class UpgradableResourceProvider : IResourceProvider<UpgradableResourceV2
     {
         // Do nothing
         return Task.FromResult(planned);
+    }
+
+    public Task<IList<UpgradableResourceV2>> ImportAsync(string id)
+    {
+        throw new NotSupportedException();
     }
 }

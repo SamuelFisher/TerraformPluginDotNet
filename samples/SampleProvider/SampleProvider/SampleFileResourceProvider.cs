@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,6 +45,29 @@ public class SampleFileResourceProvider : IResourceProvider<SampleFileResource>
     {
         await File.WriteAllTextAsync(planned.Path, BuildContent(planned.Content));
         return planned;
+    }
+
+    public async Task<IList<SampleFileResource>> ImportAsync(string id)
+    {
+        // Id is not SampleFileResource.Id, it's the "import ID" supplied by Terraform
+        // and in this provider, is defined to be the file name.
+
+        if (!File.Exists(id))
+        {
+            throw new TerraformResourceProviderException($"File '{id}' does not exist.");
+        }
+
+        var content = await File.ReadAllTextAsync(id);
+
+        return new[]
+        {
+            new SampleFileResource
+            {
+                Id = Guid.NewGuid().ToString(),
+                Path = id,
+                Content = content,
+            },
+        };
     }
 
     private string BuildContent(string content)

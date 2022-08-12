@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
@@ -115,6 +116,30 @@ content = ""Content""
         await terraform.ApplyAsync();
 
         Assert.That(File.Exists(testFilePath), Is.False);
+    }
+
+    [Test]
+    public async Task TestImportFile()
+    {
+        using var terraform = await _host.CreateTerraformTestInstanceAsync(ProviderName);
+
+        var resourceAddress = $"{ProviderName}_file.imported";
+
+        var resourcePath = Path.Combine(terraform.WorkDir, "imported.tf");
+        var testFilePath = Path.Combine(terraform.WorkDir, "test.txt");
+        await File.WriteAllTextAsync(testFilePath, "Something to import.");
+
+        await File.WriteAllTextAsync(resourcePath, $@"
+resource ""{ProviderName}_file"" ""imported"" {{
+path = ""{testFilePath.Replace("\\", "\\\\")}""
+content = ""Something to import.""
+}}
+");
+
+        await terraform.ImportAsync(resourceAddress, testFilePath);
+
+        var changes = await terraform.PlanWithOutputAsync();
+        Assert.That(changes.ResourceChanges.SelectMany(x => x.Change.Actions).All(x => x == "no-op"), Is.True);
     }
 
     [Test]
