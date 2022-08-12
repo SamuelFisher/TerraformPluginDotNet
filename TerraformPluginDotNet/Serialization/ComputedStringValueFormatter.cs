@@ -4,7 +4,7 @@ using MessagePack.Formatters;
 
 namespace TerraformPluginDotNet.Serialization;
 
-public class ComputedValueFormatter : IMessagePackFormatter<string>
+public class ComputedStringValueFormatter : IMessagePackFormatter<string>
 {
     public string Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
     {

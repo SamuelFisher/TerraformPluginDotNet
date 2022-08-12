@@ -17,7 +17,7 @@ public class UpgradableResourceV2
     [Key("id")]
     [Computed]
     [Description("Unique ID for this resource.")]
-    [MessagePackFormatter(typeof(ComputedValueFormatter))]
+    [MessagePackFormatter(typeof(ComputedStringValueFormatter))]
     public string Id { get; set; }
 
     // Renamed from `Value` in V1.
