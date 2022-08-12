@@ -40,7 +40,7 @@ class SchemaBuilder : ISchemaBuilder
             {
                 Name = key.StringKey,
                 Type = ByteString.CopyFromUtf8(GetTerraformType(property.PropertyType)),
-                Description = description?.Description,
+                Description = description.Description,
                 Optional = !required,
                 Required = required,
                 Computed = computed,
