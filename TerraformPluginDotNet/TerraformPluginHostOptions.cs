@@ -5,7 +5,7 @@ namespace TerraformPluginDotNet;
 public class TerraformPluginHostOptions
 {
     /// <summary>
-    /// The full provider name. For example, `example.com/example/dotnetsample`.
+    /// The full provider name. For example, `example.com/example/sampleprovider`.
     /// </summary>
     [Required]
     public string FullProviderName { get; set; }
