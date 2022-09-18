@@ -86,13 +86,13 @@ dotnet publish -r linux-x64 -c release -p:PublishSingleFile=true
 
 ```bash
 # Create plugin directory
-mkdir -p ~/.terraform.d/plugins/example.com/example/dotnetsample/1.0.0/linux_amd64/
+mkdir -p ~/.terraform.d/plugins/example.com/example/sampleprovider/1.0.0/linux_amd64/
 
 # Copy binary
-cp ./bin/release/net6.0/linux-x64/publish/SampleProvider ~/.terraform.d/plugins/example.com/example/dotnetsample/1.0.0/linux_amd64/terraform-provider-dotnetsample
+cp ./bin/release/net6.0/linux-x64/publish/SampleProvider ~/.terraform.d/plugins/example.com/example/sampleprovider/1.0.0/linux_amd64/terraform-provider-sampleprovider
 
 # Copy log config
-cp ./bin/release/net6.0/linux-x64/publish/serilog.json ~/.terraform.d/plugins/example.com/example/dotnetsample/1.0.0/linux_amd64/serilog.json
+cp ./bin/release/net6.0/linux-x64/publish/serilog.json ~/.terraform.d/plugins/example.com/example/sampleprovider/1.0.0/linux_amd64/serilog.json
 ```
 
 3. Create a new Terraform project or open an existing one. The remaining commands
@@ -103,8 +103,8 @@ are run in this directory.
 ```hcl
 terraform {
   required_providers {
-    dotnetsample = {
-      source = "example.com/example/dotnetsample"
+    sampleprovider = {
+      source = "example.com/example/sampleprovider"
       version = "1.0.0"
     }
   }
@@ -114,13 +114,13 @@ terraform {
 3. Add to `providers.tf`:
 
 ```hcl
-provider "dotnetsample" {}
+provider "sampleprovider" {}
 ```
 
 4. Define a resource in `sample.tf`
 
 ```hcl
-resource "dotnetsample_file" "demo_file" {
+resource "sampleprovider_file" "demo_file" {
   path = "/tmp/file.txt"
   content = "this is a test"
 }
