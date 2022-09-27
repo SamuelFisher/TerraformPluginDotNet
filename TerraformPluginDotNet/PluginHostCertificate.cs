@@ -2,7 +2,4 @@
 
 namespace TerraformPluginDotNet;
 
-public record PluginHostCertificate
-{
-    public X509Certificate2 Certificate { get; init; }
-}
+public record PluginHostCertificate(X509Certificate2 Certificate);

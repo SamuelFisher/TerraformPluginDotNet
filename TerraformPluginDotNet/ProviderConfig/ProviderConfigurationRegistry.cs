@@ -2,9 +2,6 @@
 
 namespace TerraformPluginDotNet.ProviderConfig;
 
-record ProviderConfigurationRegistry
-{
-    public Schema ConfigurationSchema { get; init; }
-
-    public Type ConfigurationType { get; init; }
-}
+record ProviderConfigurationRegistry(
+    Schema ConfigurationSchema,
+    Type ConfigurationType);

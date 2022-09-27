@@ -12,7 +12,7 @@ public static class HostApplicationLifetimeExtensions
     {
         lifetime.ApplicationStarted.Register(() =>
         {
-            var serverAddress = app.ServerFeatures.Get<IServerAddressesFeature>().Addresses.First();
+            var serverAddress = app.ServerFeatures.Get<IServerAddressesFeature>()?.Addresses.First() ?? throw new InvalidOperationException($"{nameof(IServerAddressesFeature)} not found in {nameof(app.ServerFeatures)}");
             var serverUri = new Uri(serverAddress);
             var host = serverUri.Host == "localhost" ? "127.0.0.1" : serverUri.Host;
 

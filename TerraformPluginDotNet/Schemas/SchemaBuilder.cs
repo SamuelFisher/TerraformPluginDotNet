@@ -4,6 +4,7 @@ using Google.Protobuf;
 using Microsoft.Extensions.Logging;
 using TerraformPluginDotNet.Resources;
 using Tfplugin5;
+using KeyAttribute = MessagePack.KeyAttribute;
 
 namespace TerraformPluginDotNet.Schemas;
 
@@ -29,16 +30,29 @@ class SchemaBuilder : ISchemaBuilder
         var block = new Schema.Types.Block();
         foreach (var property in properties)
         {
-            var key = property.GetCustomAttribute<MessagePack.KeyAttribute>();
+            var key = property.GetCustomAttribute<KeyAttribute>();
+            if (key == null)
+            {
+                _logger.LogWarning($"{nameof(KeyAttribute)} attribute required for property {property.Name} in {type.Name}");
+                continue;
+            }
+
             var description = property.GetCustomAttribute<DescriptionAttribute>();
             var required = IsRequiredAttribute(property);
             var computed = property.GetCustomAttribute<ComputedAttribute>() != null;
 
+            var terraformType = GetTerraformType(property.PropertyType);
+            if (terraformType == null)
+            {
+                _logger.LogWarning($"Unable to convert the type {property.PropertyType.FullName} of property {property.Name} in {type.Name} to Terraform type.");
+                continue;
+            }
+
             block.Attributes.Add(new Schema.Types.Attribute
             {
                 Name = key.StringKey,
-                Type = ByteString.CopyFromUtf8(GetTerraformType(property.PropertyType)),
-                Description = description.Description,
+                Type = ByteString.CopyFromUtf8(terraformType),
+                Description = description?.Description,
                 Optional = !required,
                 Required = required,
                 Computed = computed,
@@ -58,11 +72,11 @@ class SchemaBuilder : ISchemaBuilder
             (property.PropertyType.IsValueType && Nullable.GetUnderlyingType(property.PropertyType) == null);
     }
 
-    private static string GetTerraformType(Type t)
+    private static string? GetTerraformType(Type t)
     {
-        if (t.IsValueType && Nullable.GetUnderlyingType(t) != null)
+        if (t.IsValueType && Nullable.GetUnderlyingType(t) is Type underlyingType)
         {
-            t = Nullable.GetUnderlyingType(t);
+            t = underlyingType;
         }
 
         if (t == typeof(string))
@@ -98,6 +112,6 @@ class SchemaBuilder : ISchemaBuilder
             return $"[\"list\",{elementType}]";
         }
 
-        throw new NotSupportedException($"Unable to convert {t.FullName} to Terraform type.");
+        return null;
     }
 }
