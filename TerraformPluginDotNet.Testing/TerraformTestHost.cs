@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -50,17 +51,27 @@ public class TerraformTestHost : IAsyncDisposable
             .RunAsync(_cancelHost.Token);
     }
 
-    public async Task<ITerraformTestInstance> CreateTerraformTestInstanceAsync(string providerName, bool configure = true)
+    public async Task<ITerraformTestInstance> CreateTerraformTestInstanceAsync(string providerName, bool configureProvider = true, bool configureTerraform = true)
     {
         var workDir = Path.Combine(Path.GetTempPath(), $"TerraformPluginDotNet_{Guid.NewGuid()}");
         Directory.CreateDirectory(workDir);
 
         var terraform = new TerraformTestInstance(_terraformBin, providerName, _port, workDir);
 
-        if (configure)
+        if (configureProvider || configureTerraform)
         {
-            await File.WriteAllTextAsync(workDir + "/conf.tf", $@"
+            var configFile = new StringBuilder();
+
+            if (configureProvider)
+            {
+                configFile.Append($@"
 provider ""{providerName}"" {{}}
+");
+            }
+
+            if (configureTerraform)
+            {
+                configFile.Append($@"
 terraform {{
   required_providers {{
     {providerName} = {{
@@ -70,6 +81,9 @@ terraform {{
   }}
 }}
 ");
+            }
+
+            await File.WriteAllTextAsync(workDir + "/conf.tf", configFile.ToString());
 
             await terraform.InitAsync();
         }
@@ -90,7 +104,7 @@ terraform {{
 
     private static int FindFreePort()
     {
-        int port = 0;
+        var port = 0;
         var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
         try

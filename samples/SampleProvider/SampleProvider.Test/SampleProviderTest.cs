@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -145,19 +145,11 @@ content = ""Something to import.""
     [Test]
     public async Task TestConfigureFileHeader()
     {
-        using var terraform = await _host.CreateTerraformTestInstanceAsync(ProviderName, configure: false);
+        using var terraform = await _host.CreateTerraformTestInstanceAsync(ProviderName, configureProvider: false);
 
-        await File.WriteAllTextAsync(terraform.WorkDir + "/conf.tf", $@"
+        await File.AppendAllTextAsync(terraform.WorkDir + "/conf.tf", $@"
 provider ""{ProviderName}"" {{
   file_header = ""# File Header""
-}}
-terraform {{
-  required_providers {{
-    {ProviderName} = {{
-      source = ""example.com/example/{ProviderName}""
-      version = ""1.0.0""
-    }}
-  }}
 }}
 ");
 
