@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using MessagePack;
 using TerraformPluginDotNet.Resources;
 using TerraformPluginDotNet.Serialization;
-using KeyAttribute = MessagePack.KeyAttribute;
 
 namespace TerraformPluginDotNet.Test;
 
