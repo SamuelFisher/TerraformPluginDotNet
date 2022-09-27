@@ -1,9 +1,7 @@
 ﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using MessagePack;
 using TerraformPluginDotNet.Resources;
 using TerraformPluginDotNet.Serialization;
-using Key = MessagePack.KeyAttribute;
 
 namespace SampleProvider;
 
