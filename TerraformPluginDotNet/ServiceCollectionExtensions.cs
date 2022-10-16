@@ -17,6 +17,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<ISchemaBuilder, SchemaBuilder>();
         services.AddTransient(typeof(ProviderConfigurationHost<>));
         services.AddTransient(typeof(ResourceProviderHost<>));
+        services.AddTransient(typeof(DataSourceProviderHost<>));
         services.AddTransient(typeof(IResourceUpgrader<>), typeof(DefaultResourceUpgrader<>));
         services.AddTransient<IDynamicValueSerializer, DefaultDynamicValueSerializer>();
         return services;
