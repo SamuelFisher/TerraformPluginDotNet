@@ -6,6 +6,7 @@
     <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
     <IsPackable>false</IsPackable>
     <AssemblyName>terraform-provider-$([System.String]::Copy($(MSBuildProjectName)).ToLowerInvariant())</AssemblyName>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\TerraformPluginDotNet\TerraformPluginDotNet.csproj" />

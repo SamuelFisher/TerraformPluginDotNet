@@ -69,7 +69,7 @@ public static class CertificateGenerator
         // Sign certificate
         var signatureFactory = new Asn1SignatureFactory("SHA256WithRSA", issuerPrivKey, random);
         var certificate = certificateGenerator.Generate(signatureFactory);
-        var x509 = new X509Certificate2(certificate.GetEncoded(), (string)null, X509KeyStorageFlags.Exportable);
+        var x509 = new X509Certificate2(certificate.GetEncoded(), (string?)null, X509KeyStorageFlags.Exportable);
 
         // Private key
         var privateKeyInfo = PrivateKeyInfoFactory.CreatePrivateKeyInfo(subjectKeyPair.Private);

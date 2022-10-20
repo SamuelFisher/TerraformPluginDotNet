@@ -17,6 +17,6 @@ class DefaultResourceUpgrader<T> : IResourceUpgrader<T>
 
     public Task<T> UpgradeResourceStateAsync(long schemaVersion, ReadOnlyMemory<byte> json)
     {
-        return Task.FromResult(_serializer.DeserializeJson<T>(json));
+        return Task.FromResult(_serializer.DeserializeJson<T>(json) ?? throw new InvalidOperationException("Invalid Json provided"));
     }
 }

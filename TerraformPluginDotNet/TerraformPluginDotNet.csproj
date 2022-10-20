@@ -9,6 +9,7 @@
     <Authors>SamuelFisher</Authors>
     <WarningsAsErrors>true</WarningsAsErrors>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <Protobuf Include="Protos\tfplugin5.2.proto" GrpcServices="Server" />

@@ -16,11 +16,11 @@ public class UpgradableResourceV2
     [Computed]
     [Description("Unique ID for this resource.")]
     [MessagePackFormatter(typeof(ComputedStringValueFormatter))]
-    public string Id { get; set; }
+    public string? Id { get; set; }
 
     // Renamed from `Value` in V1.
     [Key("data")]
     [Description("Some data.")]
     [Required]
-    public string Data { get; set; }
+    public string Data { get; set; } = null!;
 }

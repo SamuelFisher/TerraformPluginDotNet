@@ -4,6 +4,7 @@ using Google.Protobuf;
 using Microsoft.Extensions.Logging;
 using TerraformPluginDotNet.Resources;
 using Tfplugin5;
+using KeyAttribute = MessagePack.KeyAttribute;
 
 namespace TerraformPluginDotNet.Schemas;
 
@@ -29,7 +30,8 @@ class SchemaBuilder : ISchemaBuilder
         var block = new Schema.Types.Block();
         foreach (var property in properties)
         {
-            var key = property.GetCustomAttribute<MessagePack.KeyAttribute>();
+            var key = property.GetCustomAttribute<KeyAttribute>() ?? throw new InvalidOperationException($"Missing {nameof(KeyAttribute)} on {property.Name} in {type.Name}.");
+
             var description = property.GetCustomAttribute<DescriptionAttribute>();
             var required = IsRequiredAttribute(property);
             var computed = property.GetCustomAttribute<ComputedAttribute>() != null;
@@ -38,7 +40,7 @@ class SchemaBuilder : ISchemaBuilder
             {
                 Name = key.StringKey,
                 Type = ByteString.CopyFromUtf8(GetTerraformType(property.PropertyType)),
-                Description = description.Description,
+                Description = description?.Description,
                 Optional = !required,
                 Required = required,
                 Computed = computed,
@@ -60,9 +62,9 @@ class SchemaBuilder : ISchemaBuilder
 
     private static string GetTerraformType(Type t)
     {
-        if (t.IsValueType && Nullable.GetUnderlyingType(t) != null)
+        if (t.IsValueType && Nullable.GetUnderlyingType(t) is Type underlyingType)
         {
-            t = Nullable.GetUnderlyingType(t);
+            t = underlyingType;
         }
 
         if (t == typeof(string))

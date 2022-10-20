@@ -5,7 +5,7 @@ namespace SampleProvider;
 
 public class SampleConfigurator : IProviderConfigurator<Configuration>
 {
-    public Configuration Config { get; private set; }
+    public Configuration? Config { get; private set; }
 
     public Task ConfigureAsync(Configuration config)
     {
