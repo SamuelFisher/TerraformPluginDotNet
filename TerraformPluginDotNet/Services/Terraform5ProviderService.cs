@@ -13,14 +13,14 @@ class Terraform5ProviderService : Provider.ProviderBase
     private readonly IHostApplicationLifetime _lifetime;
     private readonly ResourceRegistry _resourceRegistry;
     private readonly IServiceProvider _serviceProvider;
-    private readonly ProviderConfigurationRegistry _providerConfiguration;
+    private readonly ProviderConfigurationRegistry? _providerConfiguration;
 
     public Terraform5ProviderService(
         ILogger<Terraform5ProviderService> logger,
         IHostApplicationLifetime lifetime,
         ResourceRegistry resourceRegistry,
         IServiceProvider serviceProvider,
-        ProviderConfigurationRegistry providerConfiguration = null)
+        ProviderConfigurationRegistry? providerConfiguration = null)
     {
         _logger = logger;
         _lifetime = lifetime;
@@ -38,8 +38,8 @@ class Terraform5ProviderService : Provider.ProviderBase
 
         var configurationHostType = typeof(ProviderConfigurationHost<>).MakeGenericType(_providerConfiguration.ConfigurationType);
         var configurationHost = _serviceProvider.GetService(configurationHostType);
-        await (Task)configurationHostType.GetMethod(nameof(ProviderConfigurationHost<object>.ConfigureAsync))
-            .Invoke(configurationHost, new[] { request });
+        await (Task)configurationHostType.GetMethod(nameof(ProviderConfigurationHost<object>.ConfigureAsync))!
+            .Invoke(configurationHost, new[] { request })!;
         return new Configure.Types.Response { };
     }
 
@@ -78,8 +78,8 @@ class Terraform5ProviderService : Provider.ProviderBase
 
         var providerHostType = typeof(ResourceProviderHost<>).MakeGenericType(resourceType);
         var provider = _serviceProvider.GetService(providerHostType);
-        return (Task<PlanResourceChange.Types.Response>)providerHostType.GetMethod(nameof(ResourceProviderHost<object>.PlanResourceChange))
-            .Invoke(provider, new[] { request });
+        return (Task<PlanResourceChange.Types.Response>)providerHostType.GetMethod(nameof(ResourceProviderHost<object>.PlanResourceChange))!
+            .Invoke(provider, new[] { request })!;
     }
 
     public override Task<ApplyResourceChange.Types.Response> ApplyResourceChange(ApplyResourceChange.Types.Request request, ServerCallContext context)
@@ -97,8 +97,8 @@ class Terraform5ProviderService : Provider.ProviderBase
 
         var providerHostType = typeof(ResourceProviderHost<>).MakeGenericType(resourceType);
         var provider = _serviceProvider.GetService(providerHostType);
-        return (Task<ApplyResourceChange.Types.Response>)providerHostType.GetMethod(nameof(ResourceProviderHost<object>.ApplyResourceChange))
-            .Invoke(provider, new[] { request });
+        return (Task<ApplyResourceChange.Types.Response>)providerHostType.GetMethod(nameof(ResourceProviderHost<object>.ApplyResourceChange))!
+            .Invoke(provider, new[] { request })!;
     }
 
     public override Task<UpgradeResourceState.Types.Response> UpgradeResourceState(UpgradeResourceState.Types.Request request, ServerCallContext context)
@@ -116,8 +116,8 @@ class Terraform5ProviderService : Provider.ProviderBase
 
         var providerHostType = typeof(ResourceProviderHost<>).MakeGenericType(resourceType);
         var provider = _serviceProvider.GetService(providerHostType);
-        return (Task<UpgradeResourceState.Types.Response>)providerHostType.GetMethod(nameof(ResourceProviderHost<object>.UpgradeResourceState))
-            .Invoke(provider, new[] { request });
+        return (Task<UpgradeResourceState.Types.Response>)providerHostType.GetMethod(nameof(ResourceProviderHost<object>.UpgradeResourceState))!
+            .Invoke(provider, new[] { request })!;
     }
 
     public override Task<ReadResource.Types.Response> ReadResource(ReadResource.Types.Request request, ServerCallContext context)
@@ -135,8 +135,8 @@ class Terraform5ProviderService : Provider.ProviderBase
 
         var providerHostType = typeof(ResourceProviderHost<>).MakeGenericType(resourceType);
         var provider = _serviceProvider.GetService(providerHostType);
-        return (Task<ReadResource.Types.Response>)providerHostType.GetMethod(nameof(ResourceProviderHost<object>.ReadResource))
-            .Invoke(provider, new[] { request });
+        return (Task<ReadResource.Types.Response>)providerHostType.GetMethod(nameof(ResourceProviderHost<object>.ReadResource))!
+            .Invoke(provider, new[] { request })!;
     }
 
     public override Task<ImportResourceState.Types.Response> ImportResourceState(ImportResourceState.Types.Request request, ServerCallContext context)
@@ -154,8 +154,8 @@ class Terraform5ProviderService : Provider.ProviderBase
 
         var providerHostType = typeof(ResourceProviderHost<>).MakeGenericType(resourceType);
         var provider = _serviceProvider.GetService(providerHostType);
-        return (Task<ImportResourceState.Types.Response>)providerHostType.GetMethod(nameof(ResourceProviderHost<object>.ImportResourceState))
-            .Invoke(provider, new[] { request });
+        return (Task<ImportResourceState.Types.Response>)providerHostType.GetMethod(nameof(ResourceProviderHost<object>.ImportResourceState))!
+            .Invoke(provider, new[] { request })!;
     }
 
     public override Task<PrepareProviderConfig.Types.Response> PrepareProviderConfig(PrepareProviderConfig.Types.Request request, ServerCallContext context)

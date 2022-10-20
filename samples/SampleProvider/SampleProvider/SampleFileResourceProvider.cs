@@ -16,7 +16,7 @@ public class SampleFileResourceProvider : IResourceProvider<SampleFileResource>
         _configurator = configurator;
     }
 
-    public Task<SampleFileResource> PlanAsync(SampleFileResource prior, SampleFileResource proposed)
+    public Task<SampleFileResource> PlanAsync(SampleFileResource? prior, SampleFileResource proposed)
     {
         return Task.FromResult(proposed);
     }
@@ -41,7 +41,7 @@ public class SampleFileResourceProvider : IResourceProvider<SampleFileResource>
         return resource;
     }
 
-    public async Task<SampleFileResource> UpdateAsync(SampleFileResource prior, SampleFileResource planned)
+    public async Task<SampleFileResource> UpdateAsync(SampleFileResource? prior, SampleFileResource planned)
     {
         await File.WriteAllTextAsync(planned.Path, BuildContent(planned.Content));
         return planned;

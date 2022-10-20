@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using TerraformPluginDotNet.Resources;
+﻿using TerraformPluginDotNet.Resources;
 
 namespace SchemaUpgrade.PreviousVersions;
 
@@ -9,8 +8,8 @@ namespace SchemaUpgrade.PreviousVersions;
 [SchemaVersion(1)]
 internal class UpgradableResourceV1
 {
-    public string Id { get; set; }
+    public string Id { get; set; } = null!;
 
     // Renamed to `Data` in V2.
-    public string Value { get; set; }
+    public string Value { get; set; } = null!;
 }

@@ -4,9 +4,9 @@ using MessagePack.Formatters;
 
 namespace TerraformPluginDotNet.Serialization;
 
-public class ComputedStringValueFormatter : IMessagePackFormatter<string>
+public class ComputedStringValueFormatter : IMessagePackFormatter<string?>
 {
-    public string Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
+    public string? Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
     {
         if (reader.TryReadNil())
         {
@@ -21,7 +21,7 @@ public class ComputedStringValueFormatter : IMessagePackFormatter<string>
         return reader.ReadString();
     }
 
-    public void Serialize(ref MessagePackWriter writer, string value, MessagePackSerializerOptions options)
+    public void Serialize(ref MessagePackWriter writer, string? value, MessagePackSerializerOptions options)
     {
         if (value == null)
         {
