@@ -6,12 +6,11 @@ using NUnit.Framework;
 using TerraformPluginDotNet;
 using TerraformPluginDotNet.ResourceProvider;
 using TerraformPluginDotNet.Testing;
-using static Tfplugin5.Provider;
 
 namespace DataSourceProvider.Test;
 
 [TestFixture(Category = "Functional", Explicit = true)]
-public class SampleProviderTest
+public class SampleDataSourceProviderTest
 {
     private const string ProviderName = "datasourceprovider";
 
