@@ -45,12 +45,19 @@ class Terraform5ProviderService : Provider.ProviderBase
 
     public override Task<GetProviderSchema.Types.Response> GetSchema(GetProviderSchema.Types.Request request, ServerCallContext context)
     {
-        var res = new GetProviderSchema.Types.Response();
-        res.Provider = _providerConfiguration?.ConfigurationSchema ?? new Schema { Block = new Schema.Types.Block { } };
+        var res = new GetProviderSchema.Types.Response
+        {
+            Provider = _providerConfiguration?.ConfigurationSchema ?? new Schema { Block = new Schema.Types.Block { } },
+        };
 
         foreach (var schema in _resourceRegistry.Schemas)
         {
             res.ResourceSchemas.Add(schema.Key, schema.Value);
+        }
+
+        foreach (var schema in _resourceRegistry.DataSchemas)
+        {
+            res.DataSourceSchemas.Add(schema.Key, schema.Value);
         }
 
         return Task.FromResult(res);
@@ -64,7 +71,7 @@ class Terraform5ProviderService : Provider.ProviderBase
             {
                 Diagnostics =
                     {
-                        new Diagnostic { Detail = "Unkonwn type name." },
+                        new Diagnostic { Detail = "Unknown type name." },
                     },
             });
         }
@@ -83,7 +90,7 @@ class Terraform5ProviderService : Provider.ProviderBase
             {
                 Diagnostics =
                     {
-                        new Diagnostic { Detail = "Unkonwn type name." },
+                        new Diagnostic { Detail = "Unknown type name." },
                     },
             });
         }
@@ -102,7 +109,7 @@ class Terraform5ProviderService : Provider.ProviderBase
             {
                 Diagnostics =
                     {
-                        new Diagnostic { Detail = "Unkonwn type name." },
+                        new Diagnostic { Detail = "Unknown type name." },
                     },
             });
         }
@@ -121,7 +128,7 @@ class Terraform5ProviderService : Provider.ProviderBase
             {
                 Diagnostics =
                     {
-                        new Diagnostic { Detail = "Unkonwn type name." },
+                        new Diagnostic { Detail = "Unknown type name." },
                     },
             });
         }
@@ -140,7 +147,7 @@ class Terraform5ProviderService : Provider.ProviderBase
             {
                 Diagnostics =
                     {
-                        new Diagnostic { Detail = "Unkonwn type name." },
+                        new Diagnostic { Detail = "Unknown type name." },
                     },
             });
         }
@@ -171,5 +178,24 @@ class Terraform5ProviderService : Provider.ProviderBase
     public override Task<ValidateResourceTypeConfig.Types.Response> ValidateResourceTypeConfig(ValidateResourceTypeConfig.Types.Request request, ServerCallContext context)
     {
         return Task.FromResult(new ValidateResourceTypeConfig.Types.Response());
+    }
+
+    public override Task<ReadDataSource.Types.Response> ReadDataSource(ReadDataSource.Types.Request request, ServerCallContext context)
+    {
+        if (!_resourceRegistry.DataTypes.TryGetValue(request.TypeName, out var resourceType))
+        {
+            return Task.FromResult(new ReadDataSource.Types.Response
+            {
+                Diagnostics =
+                    {
+                        new Diagnostic { Detail = "Unknown type name." },
+                    },
+            });
+        }
+
+        var providerHostType = typeof(DataSourceProviderHost<>).MakeGenericType(resourceType);
+        var provider = _serviceProvider.GetService(providerHostType);
+        return (Task<ReadDataSource.Types.Response>)providerHostType.GetMethod(nameof(DataSourceProviderHost<object>.ReadDataSource))!
+            .Invoke(provider, new[] { request })!;
     }
 }

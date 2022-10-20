@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 using TerraformPluginDotNet.ResourceProvider;
 using TerraformPluginDotNet.Schemas;
+using Tfplugin5;
 
 namespace TerraformPluginDotNet.Test.ResourceProvider;
 
@@ -12,11 +13,48 @@ public class ResourceRegistryTest
     [Test]
     public void TestRegisteredSchema()
     {
-        var registration = new ResourceRegistryRegistration("test", typeof(TestResource));
-        var registry = new ResourceRegistry(new SchemaBuilder(NullLogger<SchemaBuilder>.Instance), new[] { registration });
+        var registry = BuildRegistry();
 
-        var schema = registry.Schemas["test"];
+        TestSchema(registry.Schemas["testResource"]);
+        TestSchema(registry.DataSchemas["testDataSource"]);
+    }
 
+    [TestCase("int_attribute", ExpectedResult = @"""number""")]
+    [TestCase("boolean_attribute", ExpectedResult = @"""bool""")]
+    [TestCase("float_attribute", ExpectedResult = @"""number""")]
+    [TestCase("double_attribute", ExpectedResult = @"""number""")]
+    [TestCase("string_list_attribute", ExpectedResult = @"[""list"",""string""]")]
+    [TestCase("int_list_attribute", ExpectedResult = @"[""list"",""number""]")]
+    [TestCase("string_map_attribute", ExpectedResult = @"[""map"",""string""]")]
+    [TestCase("int_map_attribute", ExpectedResult = @"[""map"",""number""]")]
+    public string TestSchemaAttributeTypes(string name)
+    {
+        var registry = BuildRegistry();
+
+        var schema = registry.Schemas["testResource"];
+
+        return TestSchemaAttribute(name, schema);
+    }
+
+    [TestCase("int_attribute", ExpectedResult = @"""number""")]
+    [TestCase("boolean_attribute", ExpectedResult = @"""bool""")]
+    [TestCase("float_attribute", ExpectedResult = @"""number""")]
+    [TestCase("double_attribute", ExpectedResult = @"""number""")]
+    [TestCase("string_list_attribute", ExpectedResult = @"[""list"",""string""]")]
+    [TestCase("int_list_attribute", ExpectedResult = @"[""list"",""number""]")]
+    [TestCase("string_map_attribute", ExpectedResult = @"[""map"",""string""]")]
+    [TestCase("int_map_attribute", ExpectedResult = @"[""map"",""number""]")]
+    public string TestDataSchemaAttributeTypes(string name)
+    {
+        var registry = BuildRegistry();
+
+        var schema = registry.DataSchemas["testDataSource"];
+
+        return TestSchemaAttribute(name, schema);
+    }
+
+    private static void TestSchema(Schema schema)
+    {
         Assert.That(schema.Block, Is.Not.Null);
 
         var attributes = schema.Block.Attributes;
@@ -44,26 +82,21 @@ public class ResourceRegistryTest
         Assert.That(requiredIntAttr.Computed, Is.False);
     }
 
-    [TestCase("int_attribute", ExpectedResult = @"""number""")]
-    [TestCase("boolean_attribute", ExpectedResult = @"""bool""")]
-    [TestCase("float_attribute", ExpectedResult = @"""number""")]
-    [TestCase("double_attribute", ExpectedResult = @"""number""")]
-    [TestCase("string_list_attribute", ExpectedResult = @"[""list"",""string""]")]
-    [TestCase("int_list_attribute", ExpectedResult = @"[""list"",""number""]")]
-    [TestCase("string_map_attribute", ExpectedResult = @"[""map"",""string""]")]
-    [TestCase("int_map_attribute", ExpectedResult = @"[""map"",""number""]")]
-    public string TestSchemaAttributeTypes(string name)
+    private static string TestSchemaAttribute(string name, Schema schema)
     {
-        var registration = new ResourceRegistryRegistration("test", typeof(TestResource));
-        var registry = new ResourceRegistry(new SchemaBuilder(NullLogger<SchemaBuilder>.Instance), new[] { registration });
-
-        var schema = registry.Schemas["test"];
-
         Assert.That(schema.Block, Is.Not.Null, $"Unable to find attribute '{name}' on schema.");
 
         var attributes = schema.Block.Attributes;
         var attr = attributes.SingleOrDefault(x => x.Name == name);
         Assert.That(attr, Is.Not.Null);
         return attr.Type.ToStringUtf8();
+    }
+
+    private static ResourceRegistry BuildRegistry()
+    {
+        var registration = new ResourceRegistryRegistration("testResource", typeof(TestResource));
+        var dataSourceRegistration = new DataSourceRegistryRegistration("testDataSource", typeof(TestResource));
+        var registry = new ResourceRegistry(new SchemaBuilder(NullLogger<SchemaBuilder>.Instance), new[] { registration }, new[] { dataSourceRegistration });
+        return registry;
     }
 }
