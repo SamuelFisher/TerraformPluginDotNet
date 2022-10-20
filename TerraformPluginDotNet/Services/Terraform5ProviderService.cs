@@ -182,7 +182,7 @@ class Terraform5ProviderService : Provider.ProviderBase
 
     public override Task<ReadDataSource.Types.Response> ReadDataSource(ReadDataSource.Types.Request request, ServerCallContext context)
     {
-        if (!_resourceRegistry.Types.TryGetValue(request.TypeName, out var resourceType))
+        if (!_resourceRegistry.DataTypes.TryGetValue(request.TypeName, out var resourceType))
         {
             return Task.FromResult(new ReadDataSource.Types.Response
             {

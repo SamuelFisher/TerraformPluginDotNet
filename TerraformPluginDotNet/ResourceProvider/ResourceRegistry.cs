@@ -18,7 +18,7 @@ class ResourceRegistry
         foreach (var registration in dataSourceRegistrations)
         {
             DataSchemas.Add(registration.ResourceName, schemaBulder.BuildSchema(registration.Type));
-            Types.Add(registration.ResourceName, registration.Type);
+            DataTypes.Add(registration.ResourceName, registration.Type);
         }
     }
 
@@ -27,4 +27,6 @@ class ResourceRegistry
     public Dictionary<string, Schema> DataSchemas { get; } = new Dictionary<string, Schema>();
 
     public Dictionary<string, Type> Types { get; } = new Dictionary<string, Type>();
+
+    public Dictionary<string, Type> DataTypes { get; } = new Dictionary<string, Type>();
 }
