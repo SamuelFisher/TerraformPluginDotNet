@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <PackageId>TerraformPluginDotNet.Testing</PackageId>
     <PackageProjectUrl>https://github.com/SamuelFisher/TerraformPluginDotNet</PackageProjectUrl>
     <RepositoryUrl>https://github.com/SamuelFisher/TerraformPluginDotNet</RepositoryUrl>
