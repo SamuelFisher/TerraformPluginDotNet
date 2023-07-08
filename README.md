@@ -111,8 +111,8 @@ are run in this directory.
 ```hcl
 terraform {
   required_providers {
-    dotnetsample = {
-      source = "example.com/example/dotnetsample"
+    sampleprovider = {
+      source = "example.com/example/sampleprovider"
       version = "1.0.0"
     }
   }
@@ -122,13 +122,13 @@ terraform {
 3. Add to `providers.tf`:
 
 ```hcl
-provider "dotnetsample" {}
+provider "sampleprovider" {}
 ```
 
 4. Define a resource in `sample.tf`
 
 ```hcl
-resource "dotnetsample_file" "demo_file" {
+resource "sampleprovider_file" "demo_file" {
   path = "/tmp/file.txt"
   content = "this is a test"
 }
