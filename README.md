@@ -86,20 +86,20 @@ and Terraform versions.
 1. In the `samples/SampleProvider/SampleProvider` directory, publish a self-contained single-file binary:
 
 ```
-dotnet publish -r linux-x64 -c release -p:PublishSingleFile=true
+dotnet publish -r linux-x64 --self-contained -c release -p:PublishSingleFile=true
 ```
 
 2. Copy the binary built above, and `serilog.json` to your Terraform plugins directory:
 
 ```bash
 # Create plugin directory
-mkdir -p ~/.terraform.d/plugins/example.com/example/dotnetsample/1.0.0/linux_amd64/
+mkdir -p ~/.terraform.d/plugins/example.com/example/sampleprovider/1.0.0/linux_amd64/
 
 # Copy binary
-cp ./bin/release/net6.0/linux-x64/publish/SampleProvider ~/.terraform.d/plugins/example.com/example/dotnetsample/1.0.0/linux_amd64/terraform-provider-dotnetsample
+cp ./bin/release/net7.0/linux-x64/publish/SampleProvider ~/.terraform.d/plugins/example.com/example/sampleprovider/1.0.0/linux_amd64/terraform-provider-sampleprovider
 
 # Copy log config
-cp ./bin/release/net6.0/linux-x64/publish/serilog.json ~/.terraform.d/plugins/example.com/example/dotnetsample/1.0.0/linux_amd64/serilog.json
+cp ./bin/release/net7.0/linux-x64/publish/serilog.json ~/.terraform.d/plugins/example.com/example/sampleprovider/1.0.0/linux_amd64/serilog.json
 ```
 
 3. Create a new Terraform project or open an existing one. The remaining commands
