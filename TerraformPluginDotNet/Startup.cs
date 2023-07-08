@@ -13,8 +13,6 @@ class Startup
     {
         services.AddGrpc();
         services.AddTerraformPluginCore();
-        services.AddGrpc();
-        services.AddTerraformPluginCore();
     }
 
     public void Configure(

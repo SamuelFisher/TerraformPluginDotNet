@@ -26,6 +26,7 @@ Currently supports functionality for:
   - Delete
   - Import
   - Schema upgrade
+- Data sources
 
 ## Usage
 
