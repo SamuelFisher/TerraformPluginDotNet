@@ -17,8 +17,15 @@ TerraformPluginDotNet.Testing | [![NuGet](https://img.shields.io/nuget/vpre/Terr
 
 ## Features
 
-Currently supports basic functionality for creating, updating and deleting
-custom resources.
+Currently supports functionality for:
+
+- Provider configuration
+- Resources:
+  - Create
+  - Update
+  - Delete
+  - Import
+  - Schema upgrade
 
 ## Usage
 
