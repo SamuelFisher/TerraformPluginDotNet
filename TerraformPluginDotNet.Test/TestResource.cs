@@ -56,4 +56,33 @@ public class TestResource
     [Key("int_map_attribute")]
     [Description("An int map attribute.")]
     public Dictionary<string, int> IntMapAttribute { get; set; }
+
+    [Key("object_1")]
+    [Description("An object.")]
+    [Required]
+    public TestObjectWithOptionalAttributes Object1 { get; set; }
+
+    [Key("object_2")]
+    [Description("An object.")]
+    [Required]
+    public TestObjectNoOptionalAttributes Object2 { get; set; }
+}
+
+[MessagePackObject]
+public class TestObjectWithOptionalAttributes
+{
+    [Key("required_string")]
+    [Required]
+    public string RequiredString { get; set; }
+
+    [Key("nested_int")]
+    public int? NestedInt { get; set; }
+}
+
+[MessagePackObject]
+public class TestObjectNoOptionalAttributes
+{
+    [Key("required_string")]
+    [Required]
+    public string RequiredString { get; set; }
 }
