@@ -51,6 +51,7 @@ public class TerraformResourceTest
               boolean_attribute = true
               float_attribute = 1.0
               double_attribute = 1.0
+              string_set_attribute = ["one", "two"]
               string_list_attribute = ["one", "two", "three"]
               int_list_attribute = [1, 2, 3]
               string_map_attribute = {
@@ -70,6 +71,7 @@ public class TerraformResourceTest
               object_2 = {
                 required_string = "value"
               }
+              tuple_attribute = [1, "value"]
             }
             """);
 
@@ -114,7 +116,15 @@ public class TerraformResourceTest
                 "a": "one",
                 "b": "two",
                 "c": "three"
-              }
+              },
+              "string_set_attribute": [
+                "one",
+                "two"
+              ],
+              "tuple_attribute": [
+                1,
+                "value"
+              ]
             }
             """;
 
@@ -166,7 +176,9 @@ public class TerraformResourceTest
               "required_int": 1,
               "required_string": "value",
               "string_list_attribute": null,
-              "string_map_attribute": null
+              "string_map_attribute": null,
+              "string_set_attribute": null,
+              "tuple_attribute": null
             }
             """;
 

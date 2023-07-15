@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using MessagePack;
 using TerraformPluginDotNet.Resources;
@@ -41,6 +42,10 @@ public class TestResource
     [Description("A double attribute.")]
     public float? DoubleAttribute { get; set; }
 
+    [Key("string_set_attribute")]
+    [Description("A string set attribute.")]
+    public HashSet<string> StringSetAttribute { get; set; }
+
     [Key("string_list_attribute")]
     [Description("A string list attribute.")]
     public List<string> StringListAttribute { get; set; }
@@ -66,6 +71,10 @@ public class TestResource
     [Description("An object.")]
     [Required]
     public TestObjectNoOptionalAttributes Object2 { get; set; }
+
+    [Key("tuple_attribute")]
+    [Description("A tuple attribute.")]
+    public Tuple<int, string> TupleAttribute { get; set; }
 }
 
 [MessagePackObject]
