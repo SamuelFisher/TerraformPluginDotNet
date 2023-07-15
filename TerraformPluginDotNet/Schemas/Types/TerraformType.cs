@@ -39,6 +39,53 @@ public abstract record TerraformType
         public override string ToJson() => $"""["list",{ElementType.ToJson()}]""";
     }
 
+    public sealed record TfSet(TerraformType ElementType) : TerraformType()
+    {
+        public override string ToJson() => $"""["set",{ElementType.ToJson()}]""";
+    }
+
+    public sealed record TfTuple : TerraformType
+    {
+        public TfTuple(ImmutableList<TerraformType> elementTypes)
+        {
+            ElementTypes = elementTypes;
+        }
+
+        public ImmutableList<TerraformType> ElementTypes { get; }
+
+        public override string ToJson()
+        {
+            var elementTypes = string.Join(",", ElementTypes.Select(x => x.ToJson()));
+            return $"[\"tuple\",[{elementTypes}]]";
+        }
+
+        public bool Equals(TfTuple? other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            return ElementTypes.Count == other.ElementTypes.Count &&
+                !ElementTypes.Except(other.ElementTypes).Any();
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 17;
+
+                foreach (var element in ElementTypes)
+                {
+                    hash = hash * 31 + element.GetHashCode();
+                }
+
+                return hash;
+            }
+        }
+    }
+
     public sealed record TfObject : TerraformType
     {
         public TfObject(
