@@ -2,6 +2,7 @@
 using TerraformPluginDotNet.ProviderConfig;
 using TerraformPluginDotNet.ResourceProvider;
 using TerraformPluginDotNet.Schemas;
+using TerraformPluginDotNet.Schemas.Types;
 using TerraformPluginDotNet.Serialization;
 
 namespace TerraformPluginDotNet;
@@ -14,6 +15,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddTerraformPluginCore(this IServiceCollection services)
     {
+        services.AddTransient<ITerraformTypeBuilder, TerraformTypeBuilder>();
         services.AddTransient<ISchemaBuilder, SchemaBuilder>();
         services.AddTransient(typeof(ProviderConfigurationHost<>));
         services.AddTransient(typeof(ResourceProviderHost<>));

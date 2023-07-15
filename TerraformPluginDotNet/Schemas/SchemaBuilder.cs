@@ -3,6 +3,7 @@ using System.Reflection;
 using Google.Protobuf;
 using Microsoft.Extensions.Logging;
 using TerraformPluginDotNet.Resources;
+using TerraformPluginDotNet.Schemas.Types;
 using Tfplugin5;
 using KeyAttribute = MessagePack.KeyAttribute;
 
@@ -11,10 +12,12 @@ namespace TerraformPluginDotNet.Schemas;
 class SchemaBuilder : ISchemaBuilder
 {
     private readonly ILogger<SchemaBuilder> _logger;
+    private readonly ITerraformTypeBuilder _typeBuilder;
 
-    public SchemaBuilder(ILogger<SchemaBuilder> logger)
+    public SchemaBuilder(ILogger<SchemaBuilder> logger, ITerraformTypeBuilder typeBuilder)
     {
         _logger = logger;
+        _typeBuilder = typeBuilder;
     }
 
     public Schema BuildSchema(Type type)
@@ -33,13 +36,19 @@ class SchemaBuilder : ISchemaBuilder
             var key = property.GetCustomAttribute<KeyAttribute>() ?? throw new InvalidOperationException($"Missing {nameof(KeyAttribute)} on {property.Name} in {type.Name}.");
 
             var description = property.GetCustomAttribute<DescriptionAttribute>();
-            var required = IsRequiredAttribute(property);
+            var required = TerraformTypeBuilder.IsRequiredAttribute(property);
             var computed = property.GetCustomAttribute<ComputedAttribute>() != null;
+            var terraformType = _typeBuilder.GetTerraformType(property.PropertyType);
+
+            if (terraformType is TerraformType.TfObject _ && !required)
+            {
+                throw new InvalidOperationException("Optional object types are not supported.");
+            }
 
             block.Attributes.Add(new Schema.Types.Attribute
             {
                 Name = key.StringKey,
-                Type = ByteString.CopyFromUtf8(GetTerraformType(property.PropertyType)),
+                Type = ByteString.CopyFromUtf8(terraformType.ToJson()),
                 Description = description?.Description,
                 Optional = !required,
                 Required = required,
@@ -52,54 +61,5 @@ class SchemaBuilder : ISchemaBuilder
             Version = schemaVersionAttribute?.SchemaVersion ?? 0,
             Block = block,
         };
-    }
-
-    private static bool IsRequiredAttribute(PropertyInfo property)
-    {
-        return property.GetCustomAttribute<RequiredAttribute>() != null ||
-            (property.PropertyType.IsValueType && Nullable.GetUnderlyingType(property.PropertyType) == null);
-    }
-
-    private static string GetTerraformType(Type t)
-    {
-        if (t.IsValueType && Nullable.GetUnderlyingType(t) is Type underlyingType)
-        {
-            t = underlyingType;
-        }
-
-        if (t == typeof(string))
-        {
-            return "\"string\"";
-        }
-
-        if (t == typeof(int) || t == typeof(float) || t == typeof(double))
-        {
-            return "\"number\"";
-        }
-
-        if (t == typeof(bool))
-        {
-            return "\"bool\"";
-        }
-
-        var dictionaryType = t.GetInterfaces()
-            .FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IDictionary<,>) && x.GenericTypeArguments[0] == typeof(string));
-
-        if (dictionaryType != null)
-        {
-            var valueType = GetTerraformType(t.GenericTypeArguments[1]);
-            return $"[\"map\",{valueType}]";
-        }
-
-        var collectionType = t.GetInterfaces()
-            .FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ICollection<>));
-
-        if (collectionType != null)
-        {
-            var elementType = GetTerraformType(collectionType.GenericTypeArguments.Single());
-            return $"[\"list\",{elementType}]";
-        }
-
-        throw new NotSupportedException($"Unable to convert {t.FullName} to Terraform type.");
     }
 }
