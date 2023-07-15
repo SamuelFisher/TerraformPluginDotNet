@@ -27,7 +27,7 @@ public class SchemaBuilderTest
         Assert.That(schema.Block, Is.Not.Null);
 
         var attributes = schema.Block.Attributes;
-        Assert.That(attributes, Has.Count.EqualTo(13));
+        Assert.That(attributes, Has.Count.EqualTo(15));
 
         var idAttr = attributes.Single(x => x.Name == "id");
         Assert.That(idAttr.Type.ToStringUtf8(), Is.EqualTo("\"string\""));
