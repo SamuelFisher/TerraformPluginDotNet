@@ -6,19 +6,28 @@ namespace TerraformPluginDotNet.ResourceProvider;
 class ResourceRegistry
 {
     public ResourceRegistry(
-        ISchemaBuilder schemaBulder,
+        ISchemaBuilder schemaBuilder,
         IEnumerable<ResourceRegistryRegistration> resourceRegistrations,
-        IEnumerable<DataSourceRegistryRegistration> dataSourceRegistrations)
+        IEnumerable<DataSourceRegistryRegistration> dataSourceRegistrations,
+        IEnumerable<IDataSourceSchemaProvider> dataSourceSchemaProviders)
     {
         foreach (var registration in resourceRegistrations)
         {
-            Schemas.Add(registration.ResourceName, schemaBulder.BuildSchema(registration.Type));
+            Schemas.Add(registration.ResourceName, schemaBuilder.BuildSchema(registration.Type));
             Types.Add(registration.ResourceName, registration.Type);
         }
         foreach (var registration in dataSourceRegistrations)
         {
-            DataSchemas.Add(registration.ResourceName, schemaBulder.BuildSchema(registration.Type));
+            DataSchemas.Add(registration.ResourceName, schemaBuilder.BuildSchema(registration.Type));
             DataTypes.Add(registration.ResourceName, registration.Type);
+        }
+        foreach (var provider in dataSourceSchemaProviders)
+        {
+            foreach (var registration in provider.GetSchemas())
+            {
+                DataSchemas.Add(registration.ResourceName, registration.Schema);
+                DataTypes.Add(registration.ResourceName, registration.Type);
+            }
         }
     }
 

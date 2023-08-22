@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging.Abstractions;
+﻿using System.Collections.Generic;
+using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 using TerraformPluginDotNet.ResourceProvider;
 using TerraformPluginDotNet.Schemas;
@@ -27,18 +28,45 @@ public class ResourceRegistryTest
     {
         var registry = BuildRegistry();
 
-        Assert.That(registry.DataSchemas.Keys, Is.EquivalentTo(new[] { "test_data_source" }));
+        Assert.That(registry.DataSchemas.Keys, Is.EquivalentTo(new[] { "test_data_source", "test_provided_data_source" }));
         Assert.That(registry.DataSchemas["test_data_source"], Is.InstanceOf<Schema>());
+        Assert.That(registry.DataSchemas["test_provided_data_source"], Is.InstanceOf<Schema>());
 
-        Assert.That(registry.DataTypes.Keys, Is.EquivalentTo(new[] { "test_data_source" }));
+        Assert.That(registry.DataTypes.Keys, Is.EquivalentTo(new[] { "test_data_source", "test_provided_data_source" }));
         Assert.That(registry.DataTypes["test_data_source"], Is.EqualTo(typeof(TestResource)));
+        Assert.That(registry.DataTypes["test_provided_data_source"], Is.EqualTo(typeof(TestResource)));
     }
 
     private static ResourceRegistry BuildRegistry()
     {
+        var schemaBuilder = new SchemaBuilder(NullLogger<SchemaBuilder>.Instance, new TerraformTypeBuilder());
         var registration = new ResourceRegistryRegistration("test_resource", typeof(TestResource));
         var dataSourceRegistration = new DataSourceRegistryRegistration("test_data_source", typeof(TestResource));
-        var registry = new ResourceRegistry(new SchemaBuilder(NullLogger<SchemaBuilder>.Instance, new TerraformTypeBuilder()), new[] { registration }, new[] { dataSourceRegistration });
+        var dataSourceSchemaProvider = new SchemaProvider(schemaBuilder);
+        var registry = new ResourceRegistry(
+            schemaBuilder,
+            new[] { registration },
+            new[] { dataSourceRegistration },
+            new[] { dataSourceSchemaProvider });
         return registry;
+    }
+
+    private class SchemaProvider : IDataSourceSchemaProvider
+    {
+        private readonly SchemaBuilder _schemaBuilder;
+
+        public SchemaProvider(
+            SchemaBuilder schemaBuilder)
+        {
+            _schemaBuilder = schemaBuilder;
+        }
+
+        public IEnumerable<DataSourceRegistration> GetSchemas()
+        {
+            yield return new DataSourceRegistration(
+                "test_provided_data_source",
+                typeof(TestResource),
+                _schemaBuilder.BuildSchema(typeof(TestResource)));
+        }
     }
 }
