@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -12,6 +13,12 @@ public record TerraformJsonPlan
 
     [JsonPropertyName("terraform_version")]
     public string TerraformVersion { get; init; }
+
+    [JsonPropertyName("planned_values")]
+    public TerraformPlannedValues PlannedValues { get; init; }
+
+    [JsonPropertyName("output_changes")]
+    public Dictionary<string, TerraformJsonChange> OutputChanges { get; init; }
 
     [JsonPropertyName("resource_changes")]
     public ImmutableList<TerraformJsonResourceChange> ResourceChanges { get; init; }
@@ -115,4 +122,22 @@ public class Resource
 
     [JsonPropertyName("sensitive_values")]
     public JsonElement SensitiveValues { get; init; }
+}
+
+public record TerraformPlannedValues
+{
+    [JsonPropertyName("outputs")]
+    public Dictionary<string, TerraformPlannedValue> Outputs { get; init; }
+}
+
+public record TerraformPlannedValue
+{
+    [JsonPropertyName("sensitive")]
+    public bool Sensitive { get; init; }
+
+    [JsonPropertyName("type")]
+    public string Type { get; init; }
+
+    [JsonPropertyName("value")]
+    public string Value { get; init; }
 }
