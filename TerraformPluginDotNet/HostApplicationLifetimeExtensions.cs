@@ -24,7 +24,10 @@ public static class HostApplicationLifetimeExtensions
             else
             {
                 var pluginHostCertificate = app.ApplicationServices.GetRequiredService<PluginHostCertificate>();
-                Console.WriteLine($"1|5|tcp|{host}:{serverUri.Port}|grpc|{Convert.ToBase64String(pluginHostCertificate.Certificate.RawData)}");
+
+                // Terraform seems not to like Base64 padding, so we trim
+                var base64EncodedCertificate = Convert.ToBase64String(pluginHostCertificate.Certificate.RawData).TrimEnd('=');
+                Console.WriteLine($"1|5|tcp|{host}:{serverUri.Port}|grpc|{base64EncodedCertificate}");
             }
         });
 
