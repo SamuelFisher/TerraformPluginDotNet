@@ -18,11 +18,11 @@ class ServiceCollectionResourceRegistryContext : IResourceRegistryContext
         _services.AddSingleton(new ResourceRegistryRegistration(resourceName, typeof(T)));
     }
 
-    public void RegisterDataSource<T>(string resourceName)
+    public void RegisterDataSource<T>(string dataSourceName)
     {
         EnsureValidType<T>();
 
-        _services.AddSingleton(new DataSourceRegistryRegistration(resourceName, typeof(T)));
+        _services.AddSingleton(new DataSourceRegistryRegistration(dataSourceName, typeof(T)));
     }
 
     private static void EnsureValidType<T>()
