@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 using TerraformPluginDotNet.Schemas;
+using TerraformPluginDotNet.Schemas.Attributes;
 using TerraformPluginDotNet.Schemas.Types;
 
 namespace TerraformPluginDotNet.Test.Schemas;
@@ -16,7 +17,8 @@ public class SchemaBuilderTest
     {
         _schemaBuilder = new SchemaBuilder(
             NullLogger<SchemaBuilder>.Instance,
-            new TerraformTypeBuilder());
+            new TerraformTypeBuilder(),
+            new TerraformAttributeResolver());
     }
 
     [Test]

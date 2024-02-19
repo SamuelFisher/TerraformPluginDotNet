@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using TerraformPluginDotNet.ResourceProvider;
 using TerraformPluginDotNet.Schemas;
+using TerraformPluginDotNet.Schemas.Attributes;
 using TerraformPluginDotNet.Schemas.Types;
 using Tfplugin5;
 
@@ -38,7 +39,7 @@ public class ResourceRegistryTest
     {
         var registration = new ResourceRegistryRegistration("test_resource", typeof(TestResource));
         var dataSourceRegistration = new DataSourceRegistryRegistration("test_data_source", typeof(TestResource));
-        var registry = new ResourceRegistry(new SchemaBuilder(NullLogger<SchemaBuilder>.Instance, new TerraformTypeBuilder()), new[] { registration }, new[] { dataSourceRegistration });
+        var registry = new ResourceRegistry(new SchemaBuilder(NullLogger<SchemaBuilder>.Instance, new TerraformTypeBuilder(), new TerraformAttributeResolver()), new[] { registration }, new[] { dataSourceRegistration });
         return registry;
     }
 }
