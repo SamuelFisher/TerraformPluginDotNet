@@ -3,21 +3,24 @@ using System.Reflection;
 using Google.Protobuf;
 using Microsoft.Extensions.Logging;
 using TerraformPluginDotNet.Resources;
+using TerraformPluginDotNet.Schemas.Attributes;
 using TerraformPluginDotNet.Schemas.Types;
 using Tfplugin5;
 using KeyAttribute = MessagePack.KeyAttribute;
 
 namespace TerraformPluginDotNet.Schemas;
 
-class SchemaBuilder : ISchemaBuilder
+public class SchemaBuilder : ISchemaBuilder
 {
     private readonly ILogger<SchemaBuilder> _logger;
     private readonly ITerraformTypeBuilder _typeBuilder;
+    private readonly ITerraformAttributeResolver _attributeResolver;
 
-    public SchemaBuilder(ILogger<SchemaBuilder> logger, ITerraformTypeBuilder typeBuilder)
+    public SchemaBuilder(ILogger<SchemaBuilder> logger, ITerraformTypeBuilder typeBuilder, ITerraformAttributeResolver attributeResolver)
     {
         _logger = logger;
         _typeBuilder = typeBuilder;
+        _attributeResolver = attributeResolver;
     }
 
     public Schema BuildSchema(Type type)
@@ -33,11 +36,12 @@ class SchemaBuilder : ISchemaBuilder
         var block = new Schema.Types.Block();
         foreach (var property in properties)
         {
-            var key = property.GetCustomAttribute<KeyAttribute>() ?? throw new InvalidOperationException($"Missing {nameof(KeyAttribute)} on {property.Name} in {type.Name}.");
+            var key = _attributeResolver.GetKey(property);
 
-            var description = property.GetCustomAttribute<DescriptionAttribute>();
-            var required = TerraformTypeBuilder.IsRequiredAttribute(property);
-            var computed = property.GetCustomAttribute<ComputedAttribute>() != null;
+            var description = _attributeResolver.GetDescription(property);
+            var required = _attributeResolver.IsRequired(property);
+            var computed = _attributeResolver.IsComputed(property);
+            var optional = _attributeResolver.IsOptional(property) ?? !required;
             var terraformType = _typeBuilder.GetTerraformType(property.PropertyType);
 
             if (terraformType is TerraformType.TfObject _ && !required)
@@ -47,12 +51,12 @@ class SchemaBuilder : ISchemaBuilder
 
             block.Attributes.Add(new Schema.Types.Attribute
             {
-                Name = key.StringKey,
+                Name = key,
                 Type = ByteString.CopyFromUtf8(terraformType.ToJson()),
-                Description = description?.Description,
-                Optional = !required,
+                Description = description,
                 Required = required,
                 Computed = computed,
+                Optional = optional,
             });
         }
 
